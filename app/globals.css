@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --color-primary: #DC0D73;
+  --color-secondary: #FDAE00;
+  --color-accent: #FEB400;
+  --color-brand-light: #F8F8F8;
+  --color-text-dark: #1F2937;
+  --color-text-muted: #6B7280;
+
+  --font-montserrat: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-opensans: 'Open Sans', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-opensans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 700;
+  color: #1f2937;
+}
