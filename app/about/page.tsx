@@ -1,33 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function AboutPage() {
-  const [teamLoaded, setTeamLoaded] = useState(false);
-  const [suppliesLoaded, setSuppliesLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
   const values = [
     {
-      title: "Uncompromising Quality",
-      desc: "We set the highest cleaning standards and perform regular audits to maintain flawless results on every visit.",
+      title: t("about.values.val1Title"),
+      desc: language === "fr"
+        ? "Nous établissons les normes de nettoyage les plus élevées et effectuons des audits réguliers pour maintenir des résultats impeccables à chaque visite."
+        : t("about.values.val1Desc"),
       icon: <Icons.Sparkles size={24} />,
     },
     {
-      title: "Reliability & Integrity",
-      desc: "Our clients trust us in their most personal spaces. We show up on time, respect your privacy, and act with complete honesty.",
+      title: t("about.values.val2Title"),
+      desc: t("about.values.val2Desc"),
       icon: <Icons.ShieldCheck size={24} />,
     },
     {
-      title: "Eco-Friendly Cleaning",
-      desc: "We prioritize the health of your family and the planet by using safe, non-toxic, and biodegradable cleaning products.",
+      title: t("about.values.val3Title"),
+      desc: t("about.values.val3Desc"),
       icon: <Icons.Waves size={24} />,
     },
     {
-      title: "Customer-Centric Care",
-      desc: "Your satisfaction is our primary goal. We customize our cleaning checklists to fit your specific needs and schedule.",
+      title: t("about.values.val4Title"),
+      desc: t("about.values.val4Desc"),
       icon: <Icons.Calendar size={24} />,
     },
   ];
@@ -38,13 +41,13 @@ export default function AboutPage() {
       <section className="bg-brand-light py-20 border-b border-gray-100">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block">
-            Our Story & Values
+            {t("about.hero.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-4xl sm:text-5xl text-text-dark max-w-3xl mx-auto leading-tight">
-            Dedicated to Spotless Standards & Absolute Trust
+            {t("about.hero.title")}
           </h1>
           <p className="font-opensans text-text-muted text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Learn more about the team behind the cleanest homes and offices in the Greater Toronto Area.
+            {t("about.hero.desc")}
           </p>
         </Reveal>
       </section>
@@ -56,18 +59,10 @@ export default function AboutPage() {
             {/* Image columns */}
             <Reveal animationType="slide-in-left" className="w-full">
               <div className="relative h-[400px] sm:h-[500px] w-full rounded-3xl overflow-hidden shadow-xl bg-gray-100">
-                {!teamLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                    <Icons.Sparkles className="text-gray-300 animate-spin" size={28} />
-                  </div>
-                )}
-                <img
-                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80"
+                <SafeImage
+                  src="/images/hero_cleaning.png"
                   alt="Our professional cleaning team"
-                  onLoad={() => setTeamLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    teamLoaded ? "opacity-100" : "opacity-0"
-                  }`}
+                  className="w-full h-full"
                 />
               </div>
             </Reveal>
@@ -76,34 +71,34 @@ export default function AboutPage() {
             <Reveal animationType="slide-in-right" className="space-y-8 font-opensans">
               <div className="space-y-4">
                 <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest block">
-                  Who We Are
+                  {t("about.story.tag")}
                 </span>
                 <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-                  Providing Peace of Mind, One Clean at a Time
+                  {t("about.story.title")}
                 </h2>
                 <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-                  Founded in Toronto, Inter-Cleaning Services began with a simple mission: to deliver premium-quality, hassle-free cleaning services that give busy families and companies their time and health back.
+                  {t("about.story.desc1")}
                 </p>
                 <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-                  Over the years, we have refined our processes, invested in advanced training for our staff, and adopted top-grade eco-friendly cleaning supplies. Today, we are proud to serve hundreds of loyal residential and commercial clients across the GTA.
+                  {t("about.story.desc2")}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-100">
                 <div className="space-y-2">
                   <h4 className="font-montserrat font-bold text-base text-text-dark flex items-center gap-2">
-                    <Icons.Check className="text-secondary" size={18} /> Our Mission
+                    <Icons.Check className="text-secondary" size={18} /> {t("about.story.mission")}
                   </h4>
                   <p className="text-text-muted text-xs leading-relaxed">
-                    To enhance the quality of life and work for our clients by creating exceptionally clean, healthy, and inviting environments.
+                    {t("about.story.missionDesc")}
                   </p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-montserrat font-bold text-base text-text-dark flex items-center gap-2">
-                    <Icons.Check className="text-secondary" size={18} /> Our Vision
+                    <Icons.Check className="text-secondary" size={18} /> {t("about.story.vision")}
                   </h4>
                   <p className="text-text-muted text-xs leading-relaxed">
-                    To be the leading premium cleaning service provider in Ontario, recognized for our flawless execution and exceptional staff support.
+                    {t("about.story.visionDesc")}
                   </p>
                 </div>
               </div>
@@ -117,13 +112,13 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              What Guides Us
+              {t("about.values.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-              Our Core Values
+              {t("about.values.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm">
-              These principles guide how we clean, how we treat our employees, and how we serve our clients.
+              {t("about.values.desc")}
             </p>
           </Reveal>
 
@@ -133,7 +128,7 @@ export default function AboutPage() {
                 key={val.title}
                 delay={idx * 100}
                 animationType="fade-in-up"
-                className="h-full flex animate-reveal"
+                className="h-full flex"
               >
                 <div className="bg-white rounded-3xl p-8 shadow-md border border-gray-150 flex flex-col items-center text-center font-opensans hover:shadow-xl transition-all duration-300 w-full">
                   <div className="bg-primary/10 text-primary p-4 rounded-2xl mb-6 shadow-inner">
@@ -159,23 +154,23 @@ export default function AboutPage() {
             {/* Text details */}
             <Reveal animationType="slide-in-left" className="space-y-6 font-opensans">
               <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-                Our Service Philosophy
+                {t("about.philosophy.tag")}
               </span>
               <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-                The Cleaning Authority You Can Rely On
+                {t("about.philosophy.title")}
               </h2>
               <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-                At Inter-Cleaning Services, we understand that professional cleaning is an investment in your well-being. That is why we do not believe in cutting corners. Our cleaning protocols are inspired by clinic-grade sanitation practices, combined with residential hospitality.
+                {t("about.philosophy.desc1")}
               </p>
               <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-                We use high-efficiency HEPA vacuums that capture 99.9% of dust particles and allergens, color-coded microfibers to eliminate cross-contamination, and disinfectant solutions that are lethal to germs but entirely safe for kids and pets.
+                {t("about.philosophy.desc2")}
               </p>
               <div className="pt-4 flex flex-col sm:flex-row items-center gap-4">
                 <Button variant="primary" href="/quote">
-                  Book a Cleaning
+                  {t("about.philosophy.cta1")}
                 </Button>
                 <Button variant="outline" href="/services">
-                  Explore Cleaning Services
+                  {t("about.philosophy.cta2")}
                 </Button>
               </div>
             </Reveal>
@@ -183,18 +178,10 @@ export default function AboutPage() {
             {/* Video or Image mockup placeholder */}
             <Reveal animationType="slide-in-right" className="w-full">
               <div className="relative h-[350px] lg:h-[450px] w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
-                {!suppliesLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                    <Icons.Sparkles className="text-gray-300 animate-spin" size={28} />
-                  </div>
-                )}
-                <img
-                  src="https://images.unsplash.com/photo-1528740564264-4a90d33d8114?auto=format&fit=crop&w=800&q=80"
+                <SafeImage
+                  src="/images/service_residential.png"
                   alt="Eco-friendly cleaning supplies"
-                  onLoad={() => setSuppliesLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    suppliesLoaded ? "opacity-100" : "opacity-0"
-                  }`}
+                  className="w-full h-full"
                 />
                 <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
               </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/navigation/Header";
 import Footer from "@/components/navigation/Footer";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Inter-Cleaning Services — Premium Cleaning across the GTA",
@@ -42,10 +43,13 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col font-opensans bg-white text-text-dark">
-        <Header />
-        <main className="flex-grow pt-[72px] lg:pt-[84px]">{children}</main>
-        <Footer />
+        <LanguageProvider>
+          <Header />
+          <main className="flex-grow pt-[72px] lg:pt-[84px]">{children}</main>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );
 }
+

@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import Button from "../ui/Button";
 import { Icons } from "../ui/Icons";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ContactForm() {
+  const { t, language } = useTranslation();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,14 +50,13 @@ export default function ContactForm() {
           <Icons.Check className="text-green-500" size={32} />
         </div>
         <h3 className="font-montserrat font-bold text-xl text-text-dark mb-2">
-          Message Sent Successfully!
+          {t("forms.contactSuccess")}
         </h3>
         <p className="text-text-muted mb-6 text-sm">
-          Thank you for reaching out to us. Our customer care team will review your inquiry and get
-          back to you shortly.
+          {t("forms.contactSuccessDesc")}
         </p>
         <Button variant="primary" onClick={() => setIsSuccess(false)}>
-          Send Another Message
+          {language === "fr" ? "Envoyer un autre message" : "Send Another Message"}
         </Button>
       </div>
     );
@@ -63,13 +65,13 @@ export default function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-gray-100 rounded-3xl shadow-lg p-8 font-opensans">
       <h3 className="font-montserrat font-extrabold text-xl text-text-dark mb-4">
-        Send Us a Message
+        {t("forms.contactTitle")}
       </h3>
       <div className="space-y-4">
         {/* Name */}
         <div className="space-y-1">
           <label htmlFor="name" className="text-xs font-semibold text-text-dark">
-            Full Name *
+            {t("forms.name")}
           </label>
           <input
             type="text"
@@ -87,7 +89,7 @@ export default function ContactForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label htmlFor="email" className="text-xs font-semibold text-text-dark">
-              Email *
+              {t("forms.email")}
             </label>
             <input
               type="email"
@@ -102,7 +104,7 @@ export default function ContactForm() {
           </div>
           <div className="space-y-1">
             <label htmlFor="phone" className="text-xs font-semibold text-text-dark">
-              Phone
+              {language === "fr" ? "Numéro de téléphone" : "Phone"}
             </label>
             <input
               type="tel"
@@ -119,7 +121,7 @@ export default function ContactForm() {
         {/* Subject */}
         <div className="space-y-1">
           <label htmlFor="subject" className="text-xs font-semibold text-text-dark">
-            Subject *
+            {t("forms.subject")}
           </label>
           <input
             type="text"
@@ -128,7 +130,7 @@ export default function ContactForm() {
             required
             value={formData.subject}
             onChange={handleChange}
-            placeholder="How can we help you?"
+            placeholder={t("forms.subjectPlaceholder")}
             className="w-full px-4 py-2.5 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
           />
         </div>
@@ -136,7 +138,7 @@ export default function ContactForm() {
         {/* Message */}
         <div className="space-y-1">
           <label htmlFor="message" className="text-xs font-semibold text-text-dark">
-            Message *
+            {language === "fr" ? "Message *" : "Message *"}
           </label>
           <textarea
             id="message"
@@ -145,15 +147,16 @@ export default function ContactForm() {
             required
             value={formData.message}
             onChange={handleChange}
-            placeholder="Type your message here..."
+            placeholder={language === "fr" ? "Écrivez votre message ici..." : "Type your message here..."}
             className="w-full px-4 py-2.5 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm"
           ></textarea>
         </div>
 
         <Button variant="primary" type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Sending..." : "Send Message"}
+          {isSubmitting ? t("forms.contactSubmitting") : t("forms.contactBtn")}
         </Button>
       </div>
     </form>
   );
 }
+

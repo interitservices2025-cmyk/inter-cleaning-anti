@@ -1,23 +1,34 @@
+"use client";
+
 import React from "react";
 import QuoteForm from "@/components/forms/QuoteForm";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function QuotePage() {
+  const { t, language } = useTranslation();
+
   const trustPoints = [
     {
-      title: "Response in Under 2 Hours",
-      desc: "Our booking agents analyze your layout size and respond with an exact price estimate quickly.",
+      title: language === "fr" ? "Réponse en moins de 2 heures" : "Response in Under 2 Hours",
+      desc: language === "fr"
+        ? "Nos agents analysent la superficie de vos locaux et répondent rapidement avec une estimation tarifaire exacte."
+        : "Our booking agents analyze your layout size and respond with an exact price estimate quickly.",
       icon: <Icons.Clock size={20} />,
     },
     {
-      title: "Insured & Bonded Teams",
-      desc: "Your home and office are covered by our comprehensive liability insurance for absolute safety.",
+      title: language === "fr" ? "Équipes assurées & cautionnées" : "Insured & Bonded Teams",
+      desc: language === "fr"
+        ? "Votre domicile et vos bureaux sont couverts par notre assurance responsabilité civile complète pour une sécurité absolue."
+        : "Your home and office are covered by our comprehensive liability insurance for absolute safety.",
       icon: <Icons.ShieldCheck size={20} />,
     },
     {
-      title: "100% Sparkle Guarantee",
-      desc: "If any area cleaned does not meet your expectations, we return to re-clean it free of charge.",
+      title: language === "fr" ? "Garantie 100% brillance" : "100% Sparkle Guarantee",
+      desc: language === "fr"
+        ? "Si une zone nettoyée ne correspond pas à vos attentes, nous y retournons gratuitement pour y remédier."
+        : "If any area cleaned does not meet your expectations, we return to re-clean it free of charge.",
       icon: <Icons.Sparkles size={20} />,
     },
   ];
@@ -30,13 +41,13 @@ export default function QuotePage() {
           <Reveal animationType="slide-in-left" className="lg:col-span-1 space-y-8 lg:sticky lg:top-28">
             <div className="space-y-4">
               <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block">
-                Free Estimate
+                {t("quote.hero.tag")}
               </span>
               <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark leading-tight">
-                Request a Custom Cleaning Quote
+                {t("quote.hero.title")}
               </h1>
               <p className="text-text-muted text-sm leading-relaxed">
-                Take a minute to fill out our interactive quote form. Tell us about your property size, requested frequency, and specific areas of focus.
+                {t("quote.hero.desc")}
               </p>
             </div>
 
@@ -62,7 +73,7 @@ export default function QuotePage() {
             {/* Quick contact banner */}
             <div className="bg-white rounded-3xl p-6 border border-gray-150 shadow-sm text-center space-y-3">
               <span className="text-text-muted text-xs font-semibold block">
-                Prefer to discuss by phone?
+                {t("quote.hero.phoneBanner")}
               </span>
               <a
                 href="tel:+14168719045"
@@ -71,7 +82,7 @@ export default function QuotePage() {
                 <Icons.Phone size={18} /> +1 (416) 871-9045
               </a>
               <span className="text-[10px] text-text-muted block">
-                Mon–Sun · 7:00 AM – 9:00 PM
+                {t("footer.hoursValue")}
               </span>
             </div>
           </Reveal>

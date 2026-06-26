@@ -5,12 +5,55 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function WindowCleaningPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
-  const checklist = [
+  const toggleFaq = (index: number | null) => {
+    setOpenFaq(index);
+  };
+
+  const checklist = language === "fr" ? [
+    {
+      title: "Nettoyage intérieur des vitres",
+      items: [
+        "Nettoyage des vitres sans traces à l'aide de raclettes haut de gamme",
+        "Essuyage des cadres intérieurs, poignées et verrous",
+        "Aspiration et essuyage des rails de rebords de fenêtres",
+        "Nettoyage intérieur des lucarnes et impostes vitrées",
+      ],
+    },
+    {
+      title: "Nettoyage extérieur des vitres",
+      items: [
+        "Essuyage de la saleté, du pollen, des toiles d'araignée et des traces de pluie",
+        "Récurage et essuyage des rebords extérieurs et des cadres en vinyle",
+        "Utilisation sécurisée d'échelles et de perches télescopiques",
+        "Système à eau pure avec perche alimentée en eau (pour les zones en hauteur)",
+      ],
+    },
+    {
+      title: "Lavage moustiquaires & rails",
+      items: [
+        "Retrait des moustiquaires, récurage avec des détergents et lavage",
+        "Séchage et réinstallation des moustiquaires sur les cadres",
+        "Nettoyage en profondeur des guides de châssis et des trous d'évacuation",
+        "Élimination des projections de peinture et des étiquettes adhésives",
+      ],
+    },
+    {
+      title: "Cloisons vitrées & Miroirs",
+      items: [
+        "Polissage des cloisons de bureau vitrées double face",
+        "Essuyage sans traces des grands miroirs de hall du sol au plafond",
+        "Essuyage des balustrades en verre, rampes d'escalier et balcons",
+        "Désinfection des portes d'entrée du vestibule",
+      ],
+    },
+  ] : [
     {
       title: "Interior Window Clean",
       items: [
@@ -49,7 +92,20 @@ export default function WindowCleaningPage() {
     },
   ];
 
-  const steps = [
+  const steps = language === "fr" ? [
+    {
+      title: "Inspection & Installation",
+      desc: "Nous vérifions le nombre de fenêtres, la hauteur et la disposition pour planifier l'installation de l'échelle ou l'accès par perche en toute sécurité.",
+    },
+    {
+      title: "Lavage & Passage de raclette",
+      desc: "Nous lavons les surfaces vitrées avec du savon biodégradable et utilisons des raclettes en caoutchouc professionnelles pour un séchage sans traces.",
+    },
+    {
+      title: "Finitions des rebords & moustiquaires",
+      desc: "Notre équipe essuie tous les rails et rebords environnants, lave les moustiquaires et les remet en place.",
+    },
+  ] : [
     {
       title: "Inspection & Setup",
       desc: "We verify window count, height, and layout to plan ladder placement or pole reach safely.",
@@ -64,7 +120,20 @@ export default function WindowCleaningPage() {
     },
   ];
 
-  const faqs = [
+  const faqs = language === "fr" ? [
+    {
+      q: "Quelles hauteurs pouvez-vous atteindre pour le lavage des vitres ?",
+      a: "Nous nettoyons les vitres intérieures et extérieures jusqu'à 3 étages pour les maisons et bâtiments commerciaux en utilisant des échelles et des perches télescopiques en fibre de carbone. Nous ne nettoyons pas les gratte-ciels.",
+    },
+    {
+      q: "Que se passe-t-il s'il pleut le jour prévu pour mon nettoyage ?",
+      a: "En cas de forte pluie ou de vent violent, nous vous contacterons pour reporter le nettoyage extérieur. Les vitres intérieures peuvent toujours être nettoyées comme prévu si vous le souhaitez.",
+    },
+    {
+      q: "Nettoyez-vous également les moustiquaires des fenêtres ?",
+      a: "Oui ! Notre service de nettoyage de vitres comprend le retrait des moustiquaires, leur récurage à l'eau et avec des détergents doux pour enlever la poussière, leur séchage et leur réinstallation.",
+    },
+  ] : [
     {
       q: "What heights can you reach for window washing?",
       a: "We clean interior and exterior windows up to 3 stories high for residential homes and commercial buildings using specialized carbon-fiber water-fed poles and ladders. We do not do high-rise skyscraper cleaning.",
@@ -83,18 +152,10 @@ export default function WindowCleaningPage() {
     <div className="w-full font-opensans bg-white">
       {/* Service Hero */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center bg-gray-100">
-        {!heroLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
-            <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-          </div>
-        )}
-        <img
-          src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=1200&q=80"
+        <SafeImage
+          src="/images/service_window.png"
           alt="Premium Window & Glass Cleaning"
-          onLoad={() => setHeroLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10"></div>
 
@@ -103,19 +164,19 @@ export default function WindowCleaningPage() {
             href="/services"
             className="flex items-center gap-1.5 text-xs text-primary font-montserrat font-bold uppercase tracking-wider hover:underline"
           >
-            <Icons.ChevronRight className="rotate-180" size={14} /> Back to Services
+            <Icons.ChevronRight className="rotate-180" size={14} /> {t("nav.backToServices")}
           </Link>
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-            Crystal Clear Views
+            {t("services.window.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl text-text-dark max-w-xl">
-            Window & Glass Cleaning
+            {t("services.window.title")}
           </h1>
           <p className="text-text-muted text-sm sm:text-base max-w-lg leading-relaxed">
-            Professional interior and exterior window washing for homes and offices. Spotless, streak-free guarantee across the GTA.
+            {t("services.window.desc")}
           </p>
           <Button variant="primary" href="/quote">
-            Request a Quote
+            {t("nav.quote")}
           </Button>
         </Reveal>
       </section>
@@ -124,10 +185,10 @@ export default function WindowCleaningPage() {
       <section className="py-20 bg-white">
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-text-dark">
-            Let the Light In with Streak-Free Windows
+            {t("services.window.h2")}
           </h2>
           <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-            Windows are your home's eyes to the world, but rain, wind, pollen, and dust quickly create a dirty film that blocks natural light. Our professional Window & Glass cleaning services ensure a crystal-clear, streak-free finish. We wash screens, wipe tracks, scrub sills, and polish glass surfaces inside and out so your property feels brighter and more spacious.
+            {t("services.window.p")}
           </p>
         </Reveal>
       </section>
@@ -137,13 +198,13 @@ export default function WindowCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Service Detail
+              {t("services.window.checklistTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Window Cleaning Checklist
+              {t("services.window.checklistTitle")}
             </h2>
             <p className="text-text-muted text-sm">
-              We clean every pane of glass meticulously. Here is what is covered:
+              {t("services.window.checklistDesc")}
             </p>
           </Reveal>
 
@@ -180,10 +241,10 @@ export default function WindowCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Method
+              {t("services.window.processTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Our Professional Window Process
+              {t("services.window.processTitle")}
             </h2>
           </Reveal>
 
@@ -206,7 +267,7 @@ export default function WindowCleaningPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-12">
             <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-              Window Cleaning FAQ
+              {t("services.window.faqTitle")}
             </h2>
           </Reveal>
 
@@ -215,7 +276,7 @@ export default function WindowCleaningPage() {
               <Reveal key={idx} delay={idx * 100} animationType="fade-in-up">
                 <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
                   <button
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    onClick={() => toggleFaq(openFaq === idx ? null : idx)}
                     className="flex items-center justify-between w-full p-5 text-left focus:outline-none cursor-pointer"
                   >
                     <span className="font-montserrat font-bold text-sm text-text-dark">{faq.q}</span>
@@ -239,14 +300,14 @@ export default function WindowCleaningPage() {
       <section className="bg-primary py-16 text-white text-center">
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-white">
-            Ready for Crystal-Clear Windows?
+            {t("services.window.ctaTitle")}
           </h2>
           <p className="text-white/90 text-sm max-w-md mx-auto">
-            Book our professional window and glass washing service today. Streak-free guarantee.
+            {t("services.window.ctaDesc")}
           </p>
           <div className="pt-2">
             <Button variant="secondary" href="/quote">
-              Request a Free Quote
+              {t("services.page.ctaBtn")}
             </Button>
           </div>
         </Reveal>

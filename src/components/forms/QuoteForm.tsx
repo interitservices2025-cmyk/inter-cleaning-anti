@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import Button from "../ui/Button";
 import { Icons } from "../ui/Icons";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function QuoteForm() {
+  const { t, language } = useTranslation();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,26 +22,26 @@ export default function QuoteForm() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const services = [
-    { label: "Residential Cleaning", value: "residential" },
-    { label: "Office & Small Business Cleaning", value: "office" },
-    { label: "Deep Cleaning", value: "deep" },
-    { label: "Move-In / Move-Out Cleaning", value: "move-in-out" },
-    { label: "Carpet & Upholstery Cleaning", value: "carpet" },
-    { label: "Window & Glass Cleaning", value: "window" },
+    { label: t("services.residential.title"), value: "residential" },
+    { label: t("services.office.title"), value: "office" },
+    { label: t("services.deep.title"), value: "deep" },
+    { label: t("services.move.title"), value: "move-in-out" },
+    { label: t("services.carpet.title"), value: "carpet" },
+    { label: t("services.window.title"), value: "window" },
   ];
 
   const propertyTypes = [
-    { label: "House / Townhouse", value: "house" },
-    { label: "Apartment / Condo", value: "condo" },
-    { label: "Commercial Office", value: "commercial" },
-    { label: "Retail Space", value: "retail" },
+    { label: language === "fr" ? "Maison / Maison de ville" : "House / Townhouse", value: "house" },
+    { label: language === "fr" ? "Appartement / Condo" : "Apartment / Condo", value: "condo" },
+    { label: language === "fr" ? "Bureau commercial" : "Commercial Office", value: "commercial" },
+    { label: language === "fr" ? "Espace commercial" : "Retail Space", value: "retail" },
   ];
 
   const frequencies = [
-    { label: "One-Time Service", value: "one-time" },
-    { label: "Weekly", value: "weekly" },
-    { label: "Bi-Weekly (Every 2 weeks)", value: "bi-weekly" },
-    { label: "Monthly", value: "monthly" },
+    { label: language === "fr" ? "Service unique / Ponctuel" : "One-Time Service", value: "one-time" },
+    { label: language === "fr" ? "Hebdomadaire" : "Weekly", value: "weekly" },
+    { label: language === "fr" ? "Toutes les deux semaines" : "Bi-Weekly (Every 2 weeks)", value: "bi-weekly" },
+    { label: language === "fr" ? "Mensuel" : "Monthly", value: "monthly" },
   ];
 
   const handleChange = (
@@ -75,14 +78,13 @@ export default function QuoteForm() {
           <Icons.Check className="text-green-500" size={40} />
         </div>
         <h3 className="font-montserrat font-bold text-2xl text-text-dark mb-4">
-          Quote Request Received!
+          {t("forms.successTitle")}
         </h3>
         <p className="text-text-muted mb-8 leading-relaxed">
-          Thank you for choosing Inter-Cleaning Services. One of our cleaning experts will review
-          your details and contact you within the next 2 hours with a customized estimate.
+          {t("forms.successDesc")}
         </p>
         <Button variant="primary" onClick={() => setIsSuccess(false)}>
-          Submit Another Request
+          {t("forms.anotherRequest")}
         </Button>
       </div>
     );
@@ -92,13 +94,15 @@ export default function QuoteForm() {
     <div className="bg-white border border-gray-100 rounded-3xl shadow-xl p-8 md:p-12 max-w-3xl mx-auto font-opensans">
       <div className="text-center mb-10">
         <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block mb-3">
-          Instant Estimate
+          {language === "fr" ? "Estimation Gratuite" : "Instant Estimate"}
         </span>
         <h2 className="font-montserrat font-extrabold text-2xl md:text-3xl text-text-dark">
-          Request a Free Quote
+          {language === "fr" ? "Demander un Devis Gratuit" : "Request a Free Quote"}
         </h2>
         <p className="text-text-muted mt-2 text-sm md:text-base">
-          Fill out the form below and receive your custom cleaning quote shortly.
+          {language === "fr"
+            ? "Remplissez le formulaire ci-dessous et recevez rapidement votre estimation personnalisée."
+            : "Fill out the form below and receive your custom cleaning quote shortly."}
         </p>
       </div>
 
@@ -107,7 +111,7 @@ export default function QuoteForm() {
           {/* Name */}
           <div className="space-y-1.5">
             <label htmlFor="name" className="text-sm font-semibold text-text-dark">
-              Full Name *
+              {t("forms.name")}
             </label>
             <input
               type="text"
@@ -124,7 +128,7 @@ export default function QuoteForm() {
           {/* Email */}
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-sm font-semibold text-text-dark">
-              Email Address *
+              {t("forms.email")}
             </label>
             <input
               type="email"
@@ -141,7 +145,7 @@ export default function QuoteForm() {
           {/* Phone */}
           <div className="space-y-1.5">
             <label htmlFor="phone" className="text-sm font-semibold text-text-dark">
-              Phone Number *
+              {t("forms.phone")}
             </label>
             <input
               type="tel"
@@ -158,7 +162,7 @@ export default function QuoteForm() {
           {/* Service Needed */}
           <div className="space-y-1.5">
             <label htmlFor="serviceNeeded" className="text-sm font-semibold text-text-dark">
-              Service Needed *
+              {t("forms.serviceNeeded")}
             </label>
             <select
               id="serviceNeeded"
@@ -168,7 +172,7 @@ export default function QuoteForm() {
               onChange={handleChange}
               className="w-full px-4 py-3 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all cursor-pointer"
             >
-              <option value="">Select a service</option>
+              <option value="">{t("forms.selectService")}</option>
               {services.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
@@ -180,7 +184,7 @@ export default function QuoteForm() {
           {/* Property Type */}
           <div className="space-y-1.5">
             <label htmlFor="propertyType" className="text-sm font-semibold text-text-dark">
-              Property Type *
+              {t("forms.propertyType")}
             </label>
             <select
               id="propertyType"
@@ -190,7 +194,7 @@ export default function QuoteForm() {
               onChange={handleChange}
               className="w-full px-4 py-3 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all cursor-pointer"
             >
-              <option value="">Select property type</option>
+              <option value="">{t("forms.selectProperty")}</option>
               {propertyTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
@@ -202,7 +206,7 @@ export default function QuoteForm() {
           {/* Frequency */}
           <div className="space-y-1.5">
             <label htmlFor="frequency" className="text-sm font-semibold text-text-dark">
-              Frequency *
+              {t("forms.frequency")}
             </label>
             <select
               id="frequency"
@@ -212,7 +216,7 @@ export default function QuoteForm() {
               onChange={handleChange}
               className="w-full px-4 py-3 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all cursor-pointer"
             >
-              <option value="">Select cleaning frequency</option>
+              <option value="">{t("forms.selectFrequency")}</option>
               {frequencies.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
@@ -225,7 +229,7 @@ export default function QuoteForm() {
         {/* Message */}
         <div className="space-y-1.5">
           <label htmlFor="message" className="text-sm font-semibold text-text-dark">
-            Additional Details or Special Instructions
+            {t("forms.message")}
           </label>
           <textarea
             id="message"
@@ -233,7 +237,7 @@ export default function QuoteForm() {
             rows={4}
             value={formData.message}
             onChange={handleChange}
-            placeholder="Tell us about the size of your space, specific areas of focus, pets, etc."
+            placeholder={t("forms.messagePlaceholder")}
             className="w-full px-4 py-3 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
           ></textarea>
         </div>
@@ -241,18 +245,18 @@ export default function QuoteForm() {
         {/* Submit button */}
         <div className="pt-4 flex flex-col items-center gap-4">
           <Button variant="primary" type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting Request..." : "Submit Quote Request"}
+            {isSubmitting ? t("forms.submitting") : t("forms.submit")}
           </Button>
 
           <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-text-muted pt-4 border-t border-gray-100 w-full">
             <span className="flex items-center gap-1.5">
-              <Icons.ShieldCheck className="text-secondary" size={14} /> Safe & Secure
+              <Icons.ShieldCheck className="text-secondary" size={14} /> {t("forms.safeSecure")}
             </span>
             <span className="flex items-center gap-1.5">
-              <Icons.Clock className="text-secondary" size={14} /> Response in under 2 hours
+              <Icons.Clock className="text-secondary" size={14} /> {t("forms.fastResponse")}
             </span>
             <span className="flex items-center gap-1.5">
-              <Icons.Sparkles className="text-secondary" size={14} /> 100% Satisfaction Guaranteed
+              <Icons.Sparkles className="text-secondary" size={14} /> {t("forms.guarantee")}
             </span>
           </div>
         </div>
@@ -260,3 +264,4 @@ export default function QuoteForm() {
     </div>
   );
 }
+

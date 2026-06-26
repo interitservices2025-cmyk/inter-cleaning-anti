@@ -1,25 +1,29 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Icons } from "../ui/Icons";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation();
 
   const services = [
-    { label: "Residential Cleaning", href: "/services/residential-cleaning" },
-    { label: "Office & Small Business", href: "/services/office-cleaning" },
-    { label: "Deep Cleaning", href: "/services/deep-cleaning" },
-    { label: "Move-In / Move-Out", href: "/services/move-in-move-out" },
-    { label: "Carpet & Upholstery", href: "/services/carpet-upholstery-cleaning" },
-    { label: "Window & Glass", href: "/services/window-glass-cleaning" },
+    { label: t("services.residential.title"), href: "/services/residential-cleaning" },
+    { label: t("services.office.title"), href: "/services/office-cleaning" },
+    { label: t("services.deep.title"), href: "/services/deep-cleaning" },
+    { label: t("services.move.title"), href: "/services/move-in-move-out" },
+    { label: t("services.carpet.title"), href: "/services/carpet-upholstery-cleaning" },
+    { label: t("services.window.title"), href: "/services/window-glass-cleaning" },
   ];
 
   const quickLinks = [
-    { label: "Home", href: "/home" },
-    { label: "About Us", href: "/about" },
-    { label: "Careers", href: "/careers" },
-    { label: "Contact Us", href: "/contact" },
-    { label: "Request a Quote", href: "/quote" },
+    { label: t("nav.home"), href: "/home" },
+    { label: t("nav.about"), href: "/about" },
+    { label: t("nav.careers"), href: "/careers" },
+    { label: t("nav.contact"), href: "/contact" },
+    { label: t("nav.quote"), href: "/quote" },
   ];
 
   const serviceAreas = [
@@ -50,8 +54,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-text-muted text-sm leading-relaxed font-opensans">
-              Premium cleaning solutions across the Greater Toronto Area. Dedicated to delivering
-              spotless, healthy spaces for your home and business.
+              {t("footer.desc")}
             </p>
             <div className="space-y-3 font-opensans text-sm">
               <div className="flex items-center gap-3 text-text-dark">
@@ -78,7 +81,7 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h3 className="font-montserrat font-bold text-base text-text-dark tracking-wide uppercase mb-6">
-              Company
+              {t("footer.company")}
             </h3>
             <ul className="space-y-3 font-opensans text-sm">
               {quickLinks.map((link) => (
@@ -98,7 +101,7 @@ export default function Footer() {
           {/* Services Links */}
           <div>
             <h3 className="font-montserrat font-bold text-base text-text-dark tracking-wide uppercase mb-6">
-              Our Services
+              {t("footer.ourServices")}
             </h3>
             <ul className="space-y-3 font-opensans text-sm">
               {services.map((link) => (
@@ -119,10 +122,10 @@ export default function Footer() {
           <div className="space-y-6">
             <div>
               <h3 className="font-montserrat font-bold text-base text-text-dark tracking-wide uppercase mb-4">
-                Service Areas (GTA)
+                {t("footer.serviceAreas")}
               </h3>
               <p className="text-text-muted text-xs leading-relaxed mb-3">
-                We service homes and offices in the following areas:
+                {t("footer.serviceAreasDesc")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {serviceAreas.map((area) => (
@@ -138,10 +141,10 @@ export default function Footer() {
 
             <div>
               <h3 className="font-montserrat font-bold text-base text-text-dark tracking-wide uppercase mb-3">
-                Working Hours
+                {t("footer.workingHours")}
               </h3>
               <p className="text-text-muted text-sm font-opensans">
-                Mon–Sun · 7:00 AM – 9:00 PM
+                {t("footer.hoursValue")}
               </p>
             </div>
           </div>
@@ -152,17 +155,17 @@ export default function Footer() {
       <div className="border-t border-gray-200 py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 font-opensans text-xs text-text-muted">
           <div>
-            &copy; {currentYear} Inter-Cleaning Services. All rights reserved.
+            &copy; {currentYear} Inter-Cleaning Services. {t("footer.rights")}
           </div>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-primary transition-colors">
-              Privacy Policy
+              {t("footer.privacy")}
             </Link>
             <Link href="/terms" className="hover:text-primary transition-colors">
-              Terms of Service
+              {t("footer.terms")}
             </Link>
             <Link href="/sitemap" className="hover:text-primary transition-colors">
-              Sitemap
+              {t("footer.sitemap")}
             </Link>
           </div>
         </div>
@@ -170,3 +173,4 @@ export default function Footer() {
     </footer>
   );
 }
+

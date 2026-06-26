@@ -5,16 +5,55 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function ResidentialCleaningPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
   const toggleFaq = (index: number | null) => {
     setOpenFaq(index);
   };
 
-  const checklist = [
+  const checklist = language === "fr" ? [
+    {
+      title: "Cuisines éclatantes",
+      items: [
+        "Essuyer et désinfecter les comptoirs et dosserets",
+        "Nettoyer l'extérieur des gros appareils (réfrigérateur, cuisinière, micro-ondes)",
+        "Récurer et désinfecter l'évier et polir la robinetterie",
+        "Passer l'aspirateur et laver les sols, vider les poubelles",
+      ],
+    },
+    {
+      title: "Salles de bain désinfectées",
+      items: [
+        "Nettoyage complet de la cuvette, désinfection et polissage",
+        "Récurer la baignoire, les carreaux de douche et les portes vitrées",
+        "Nettoyer les éviers, les comptoirs, les miroirs et les poignées de meuble",
+        "Laver et désinfecter les carreaux de sol de la salle de bain",
+      ],
+    },
+    {
+      title: "Chambres sans poussière",
+      items: [
+        "Épousseter toutes les tables, étagères, abat-jours et cadres",
+        "Passer l'aspirateur sur les tapis, carpettes et sous les meubles accessibles",
+        "Faire le lit avec des draps propres (si laissés sur le lit)",
+        "Épousseter les rebords de fenêtres, les plinthes et les stores",
+      ],
+    },
+    {
+      title: "Espaces de vie polis",
+      items: [
+        "Épousseter les appareils électroniques, les armoires, les tables basses et les étagères",
+        "Passer l'aspirateur sur les tissus d'ameublement, les coussins de canapé et les tapis",
+        "Passer la serpillière humide sur tous les parquets, stratifiés ou carrelages",
+        "Ranger les coussins et les couvertures",
+      ],
+    },
+  ] : [
     {
       title: "Sparkling Kitchens",
       items: [
@@ -53,7 +92,20 @@ export default function ResidentialCleaningPage() {
     },
   ];
 
-  const steps = [
+  const steps = language === "fr" ? [
+    {
+      title: "Personnaliser & Réserver",
+      desc: "Indiquez-nous la taille de votre maison, vos préférences horaires et les zones nécessitant une attention particulière.",
+    },
+    {
+      title: "Nettoyage expert",
+      desc: "Nos nettoyeurs entièrement assurés et vérifiés arrivent avec des produits de qualité supérieure et exécutent notre liste de contrôle.",
+    },
+    {
+      title: "Contrôle de qualité rigoureux",
+      desc: "Nous effectuons une inspection finale pour nous assurer que chaque détail répond à nos normes élevées de propreté.",
+    },
+  ] : [
     {
       title: "Customize & Book",
       desc: "Tell us about your home size, preferred timing, and any special focus areas you need.",
@@ -68,7 +120,20 @@ export default function ResidentialCleaningPage() {
     },
   ];
 
-  const faqs = [
+  const faqs = language === "fr" ? [
+    {
+      q: "Dois-je être présent pendant le nettoyage ?",
+      a: "Non. La plupart de nos clients préfèrent nous fournir un accès par clé, un code de boîte à clés ou des instructions pour la conciergerie. Votre sécurité est notre priorité, et toutes les clés sont codées et conservées en toute sécurité.",
+    },
+    {
+      q: "Vos produits de nettoyage sont-ils sans danger pour les enfants et les animaux ?",
+      a: "Absolument. Nous utilisons exclusivement des produits de nettoyage écologiques, respectueux de l'environnement et non toxiques, entièrement biodégradables et sûrs pour les enfants et les animaux domestiques.",
+    },
+    {
+      q: "Puis-je annuler ou reporter mon rendez-vous ?",
+      a: "Oui. Vous pouvez reporter ou annuler tout rendez-vous jusqu'à 24 heures avant l'heure prévue sans pénalité. Les annulations effectuées moins de 24 heures à l'avance peuvent entraîner de légers frais.",
+    },
+  ] : [
     {
       q: "Do I need to be home for my cleaning?",
       a: "No, you don't. Most of our clients prefer to provide key access, a lockbox code, or concierge instructions. Your security is our priority, and all keys are coded and stored safely.",
@@ -87,18 +152,10 @@ export default function ResidentialCleaningPage() {
     <div className="w-full font-opensans bg-white">
       {/* Service Hero */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center bg-gray-100">
-        {!heroLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
-            <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-          </div>
-        )}
-        <img
-          src="https://images.unsplash.com/photo-1603796846097-bee99e4a60c9?auto=format&fit=crop&w=1200&q=80"
+        <SafeImage
+          src="/images/service_residential.png"
           alt="Premium Residential Cleaning"
-          onLoad={() => setHeroLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10"></div>
 
@@ -107,19 +164,19 @@ export default function ResidentialCleaningPage() {
             href="/services"
             className="flex items-center gap-1.5 text-xs text-primary font-montserrat font-bold uppercase tracking-wider hover:underline"
           >
-            <Icons.ChevronRight className="rotate-180" size={14} /> Back to Services
+            <Icons.ChevronRight className="rotate-180" size={14} /> {t("nav.backToServices")}
           </Link>
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-            Premium Home Care
+            {t("services.residential.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl text-text-dark max-w-xl">
-            Residential Cleaning Services
+            {t("services.residential.title")}
           </h1>
           <p className="text-text-muted text-sm sm:text-base max-w-lg leading-relaxed">
-            Professional house, apartment, and condo cleaning services across the Greater Toronto Area. Dedicated to sparkling standards.
+            {t("services.residential.desc")}
           </p>
           <Button variant="primary" href="/quote">
-            Request a Quote
+            {t("nav.quote")}
           </Button>
         </Reveal>
       </section>
@@ -128,10 +185,10 @@ export default function ResidentialCleaningPage() {
       <section className="py-20 bg-white">
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-text-dark">
-            Experience the Luxury of a Clean Home
+            {t("services.residential.h2")}
           </h2>
           <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-            Keeping a home clean in today's busy world is a challenge. At Inter-Cleaning Services, we give you your time back. Our trained cleaning professionals follow a meticulous checklist to sanitize, refresh, and dust your house from corner to corner. Whether you need a weekly schedule, bi-weekly cleanings, or just a monthly touch-up, we are here to support your lifestyle.
+            {t("services.residential.p")}
           </p>
         </Reveal>
       </section>
@@ -141,13 +198,13 @@ export default function ResidentialCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              What We Do
+              {t("services.residential.checklistTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Residential Cleaning Checklist
+              {t("services.residential.checklistTitle")}
             </h2>
             <p className="text-text-muted text-sm">
-              We cover every area of your home. Here is what is included in our standard residential package:
+              {t("services.residential.checklistDesc")}
             </p>
           </Reveal>
 
@@ -184,10 +241,10 @@ export default function ResidentialCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Our Method
+              {t("services.residential.processTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              3-Step Cleaning Process
+              {t("services.residential.processTitle")}
             </h2>
           </Reveal>
 
@@ -210,7 +267,7 @@ export default function ResidentialCleaningPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-12">
             <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-              Service FAQ
+              {t("services.residential.faqTitle")}
             </h2>
           </Reveal>
 
@@ -243,14 +300,14 @@ export default function ResidentialCleaningPage() {
       <section className="bg-primary py-16 text-white text-center">
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-white">
-            Ready to Give Your Home a Fresh Start?
+            {t("services.residential.ctaTitle")}
           </h2>
           <p className="text-white/90 text-sm max-w-md mx-auto">
-            Book our professional residential cleaning services online today and experience the difference.
+            {t("services.residential.ctaDesc")}
           </p>
           <div className="pt-2">
             <Button variant="secondary" href="/quote">
-              Request a Free Quote
+              {t("services.page.ctaBtn")}
             </Button>
           </div>
         </Reveal>

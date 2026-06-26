@@ -5,16 +5,55 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function OfficeCleaningPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
   const toggleFaq = (index: number | null) => {
     setOpenFaq(index);
   };
 
-  const checklist = [
+  const checklist = language === "fr" ? [
+    {
+      title: "Bureaux & Postes de travail",
+      items: [
+        "Épousseter et désinfecter les surfaces des bureaux (claviers, écrans sur demande)",
+        "Vider toutes les poubelles et bacs de recyclage",
+        "Désinfecter les téléphones de bureau et les interrupteurs",
+        "Passer l'aspirateur sur les moquettes et laver les sols durs",
+      ],
+    },
+    {
+      title: "Salles de pause & Cuisines",
+      items: [
+        "Désinfecter les comptoirs, éviers et robinets",
+        "Essuyer l'extérieur des appareils (micro-ondes, réfrigérateur, cafetières)",
+        "Désinfecter les tables à manger et les chaises",
+        "Laver et récurer le carrelage de la cuisine",
+      ],
+    },
+    {
+      title: "Salles communes & Halls",
+      items: [
+        "Épousseter les tables en verre, étagères, armoires et panneaux",
+        "Polir les poignées de porte et les vitres d'entrée",
+        "Ranger les chaises et les canapés d'attente",
+        "Passer l'aspirateur sur les tapis d'entrée à fort passage",
+      ],
+    },
+    {
+      title: "Sanitaires désinfectés",
+      items: [
+        "Désinfection complète des toilettes, urinoirs et poignées",
+        "Récurer les lavabos, robinets, comptoirs et miroirs",
+        "Laver le carrelage de sol avec des désinfectants de qualité clinique",
+        "Réapprovisionner les distributeurs de papier toilette, savon et essuie-mains",
+      ],
+    },
+  ] : [
     {
       title: "Desks & Workstations",
       items: [
@@ -53,7 +92,20 @@ export default function OfficeCleaningPage() {
     },
   ];
 
-  const steps = [
+  const steps = language === "fr" ? [
+    {
+      title: "Évaluation gratuite sur site",
+      desc: "Nous visitons vos locaux pour évaluer la superficie, le passage et les fréquences de nettoyage.",
+    },
+    {
+      title: "Calendrier de nettoyage personnalisé",
+      desc: "Nous établissons une liste de contrôle et planifions les nettoyages (hors heures de bureau, quotidien, hebdomadaire ou bihebdomadaire).",
+    },
+    {
+      title: "Audits de qualité réguliers",
+      desc: "Nos superviseurs effectuent audits réguliers pour garantir le maintien constant de nos normes.",
+    },
+  ] : [
     {
       title: "Free On-Site Assessment",
       desc: "We visit your facility to assess square footage, traffic, and clean frequencies.",
@@ -68,7 +120,20 @@ export default function OfficeCleaningPage() {
     },
   ];
 
-  const faqs = [
+  const faqs = language === "fr" ? [
+    {
+      q: "Nettoyez-vous les bureaux pendant les heures de travail ou après ?",
+      a: "La plupart des entreprises préfèrent un nettoyage en dehors des heures de bureau pour éviter toute perturbation du travail. Nous offrons des horaires flexibles, y compris les soirs et week-ends.",
+    },
+    {
+      q: "Quels types d'espaces commerciaux desservez-vous ?",
+      a: "Nous nettoyons les espaces de bureaux de petite et moyenne taille, les commerces de détail, les salles d'exposition, les cabinets médicaux, les cabinets d'avocats et les agences immobilières dans tout le GTA.",
+    },
+    {
+      q: "Vos agents de nettoyage commercial sont-ils formés et vérifiés ?",
+      a: "Oui. Tous les membres de notre personnel subissent des vérifications complètes des antécédents, signent des accords de confidentialité pour protéger les secrets professionnels et sont formés aux meilleures pratiques de désinfection.",
+    },
+  ] : [
     {
       q: "Do you clean offices during business hours or after-hours?",
       a: "Most businesses prefer after-hours cleaning to avoid work disruption. We offer fully flexible scheduling, including evenings and weekends, to fit your operations.",
@@ -87,18 +152,10 @@ export default function OfficeCleaningPage() {
     <div className="w-full font-opensans bg-white">
       {/* Service Hero */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center bg-gray-100">
-        {!heroLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
-            <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-          </div>
-        )}
-        <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80"
+        <SafeImage
+          src="/images/service_office.png"
           alt="Office & Commercial Cleaning"
-          onLoad={() => setHeroLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10"></div>
 
@@ -107,19 +164,19 @@ export default function OfficeCleaningPage() {
             href="/services"
             className="flex items-center gap-1.5 text-xs text-primary font-montserrat font-bold uppercase tracking-wider hover:underline"
           >
-            <Icons.ChevronRight className="rotate-180" size={14} /> Back to Services
+            <Icons.ChevronRight className="rotate-180" size={14} /> {t("nav.backToServices")}
           </Link>
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-            Commercial Sanitation
+            {t("services.office.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl text-text-dark max-w-xl">
-            Office & Commercial Cleaning
+            {t("services.office.title")}
           </h1>
           <p className="text-text-muted text-sm sm:text-base max-w-lg leading-relaxed">
-            Maintain a spotless, professional, and healthy work environment. Trusted commercial cleaning services in Toronto and the GTA.
+            {t("services.office.desc")}
           </p>
           <Button variant="primary" href="/quote">
-            Request a Quote
+            {t("nav.quote")}
           </Button>
         </Reveal>
       </section>
@@ -128,10 +185,10 @@ export default function OfficeCleaningPage() {
       <section className="py-20 bg-white">
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-text-dark">
-            Increase Productivity with a Pristine Workspace
+            {t("services.office.h2")}
           </h2>
           <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-            A clean workspace is essential for employee health, morale, and performance. Our professional office cleaning service ensures that your workspaces, conference rooms, breakrooms, and bathrooms are thoroughly disinfected on a schedule that fits your company's needs. We customize our checklist to match your building layout, corporate policies, and budget.
+            {t("services.office.p")}
           </p>
         </Reveal>
       </section>
@@ -141,13 +198,13 @@ export default function OfficeCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              What We Do
+              {t("services.office.checklistTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Commercial Cleaning Checklist
+              {t("services.office.checklistTitle")}
             </h2>
             <p className="text-text-muted text-sm">
-              We deliver immaculate office spaces. Here is an overview of what is included in our business package:
+              {t("services.office.checklistDesc")}
             </p>
           </Reveal>
 
@@ -184,10 +241,10 @@ export default function OfficeCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Our Process
+              {t("services.office.processTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Structured Commercial Onboarding
+              {t("services.office.processTitle")}
             </h2>
           </Reveal>
 
@@ -210,7 +267,7 @@ export default function OfficeCleaningPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-12">
             <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-              Commercial Cleaning FAQ
+              {t("services.office.faqTitle")}
             </h2>
           </Reveal>
 
@@ -243,14 +300,14 @@ export default function OfficeCleaningPage() {
       <section className="bg-primary py-16 text-white text-center">
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-white">
-            Ready to Schedule an Office Consultation?
+            {t("services.office.ctaTitle")}
           </h2>
           <p className="text-white/90 text-sm max-w-md mx-auto">
-            Book an assessment online or call our support team to discuss your corporate specifications.
+            {t("services.office.ctaDesc")}
           </p>
           <div className="pt-2">
             <Button variant="secondary" href="/quote">
-              Request a Commercial Quote
+              {t("services.office.ctaBtn")}
             </Button>
           </div>
         </Reveal>

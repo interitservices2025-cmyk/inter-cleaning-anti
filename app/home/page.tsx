@@ -1,42 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 
 interface ServiceCardProps {
   title: string;
   desc: string;
   image: string;
+  fallbackImage?: string;
   href: string;
   icon: React.ReactNode;
   delay?: number;
 }
 
-function ServiceCard({ title, desc, image, href, icon, delay = 0 }: ServiceCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
+function ServiceCard({ title, desc, image, fallbackImage, href, icon, delay = 0 }: ServiceCardProps) {
+  const { t } = useTranslation();
   return (
     <Reveal delay={delay} animationType="fade-in-up" className="h-full">
       <div className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full">
         <div className="relative h-48 w-full overflow-hidden bg-gray-100">
-          {/* Skeleton Loader */}
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-              <Icons.Sparkles className="text-gray-300 animate-spin" size={24} />
-            </div>
-          )}
-          <img
+          <SafeImage
             src={image}
+            fallbackSrc={fallbackImage}
             alt={title}
-            onLoad={() => setImageLoaded(true)}
-            className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${
-              imageLoaded ? "opacity-100" : "opacity-0"
-            }`}
+            className="w-full h-full group-hover:scale-105 transition-all duration-500"
           />
-          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-2xl text-primary shadow-sm z-10">
+          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-2xl text-primary shadow-sm z-10 font-bold">
             {icon}
           </div>
         </div>
@@ -52,7 +47,7 @@ function ServiceCard({ title, desc, image, href, icon, delay = 0 }: ServiceCardP
               href={href}
               className="inline-flex items-center gap-2 text-primary font-montserrat font-bold text-xs uppercase tracking-wider group-hover:gap-3 transition-all"
             >
-              Learn More <Icons.ArrowRight size={14} />
+              {t("nav.backToServices") === "Back to Services" ? "Learn More" : "En savoir plus"} <Icons.ArrowRight size={14} />
             </Link>
           </div>
         </div>
@@ -63,10 +58,12 @@ function ServiceCard({ title, desc, image, href, icon, delay = 0 }: ServiceCardP
 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
-  const [aboutLoaded, setAboutLoaded] = useState(false);
-  const [kitchenLoaded, setKitchenLoaded] = useState(false);
-  const [bathroomLoaded, setBathroomLoaded] = useState(false);
+  const { t, language } = useTranslation();
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -74,44 +71,56 @@ export default function HomePage() {
 
   const services: ServiceCardProps[] = [
     {
-      title: "Residential Cleaning",
-      desc: "Exceptional cleaning services for houses, condos, and apartments. Custom schedules to suit your lifestyle.",
-      image: "https://images.unsplash.com/photo-1603796846097-bee99e4a60c9?auto=format&fit=crop&w=600&q=80",
+      title: t("services.residential.title"),
+      desc: language === "fr"
+        ? "Services de nettoyage exceptionnels pour maisons, condos et appartements. Horaires sur mesure adaptés à votre style de vie."
+        : "Exceptional cleaning services for houses, condos, and apartments. Custom schedules to suit your lifestyle.",
+      image: "/images/service_residential.png",
       href: "/services/residential-cleaning",
       icon: <Icons.Home size={22} />,
     },
     {
-      title: "Office & Commercial Cleaning",
-      desc: "Maintain a pristine and productive workspace. Expert sanitation and customized plans for offices of all sizes.",
-      image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80",
+      title: t("services.office.title"),
+      desc: language === "fr"
+        ? "Maintenez un espace de travail propre et productif. Désinfection experte et formules sur mesure pour bureaux de toutes tailles."
+        : "Maintain a pristine and productive workspace. Expert sanitation and customized plans for offices of all sizes.",
+      image: "/images/service_office.png",
       href: "/services/office-cleaning",
       icon: <Icons.Building size={22} />,
     },
     {
-      title: "Deep Cleaning",
-      desc: "A thorough top-to-bottom scrub down of your property. Reaches hidden dirt, dust, and grime in every corner.",
-      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
+      title: t("services.deep.title"),
+      desc: language === "fr"
+        ? "Un récurage de fond en comble minutieux de votre propriété. Atteint la saleté invisible et la poussière dans tous les recoins."
+        : "A thorough top-to-bottom scrub down of your property. Reaches hidden dirt, dust, and grime in every corner.",
+      image: "/images/service_deep.png",
       href: "/services/deep-cleaning",
       icon: <Icons.Sparkles size={22} />,
     },
     {
-      title: "Move-In / Move-Out Cleaning",
-      desc: "Relocate stress-free. We guarantee a spotless home for new occupants or to secure your security deposit.",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+      title: t("services.move.title"),
+      desc: language === "fr"
+        ? "Déménagez l'esprit tranquille. Nous garantissons une propreté impeccable pour les nouveaux arrivants ou pour votre caution."
+        : "Relocate stress-free. We guarantee a spotless home for new occupants or to secure your security deposit.",
+      image: "/images/service_move.png",
       href: "/services/move-in-move-out",
       icon: <Icons.Trash size={22} />,
     },
     {
-      title: "Carpet & Upholstery Cleaning",
-      desc: "Revitalize your carpets and furniture. Specialized deep extraction process removes stains, allergens, and odors.",
-      image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=600&q=80",
+      title: t("services.carpet.title"),
+      desc: language === "fr"
+        ? "Redonnez vie à vos tapis et meubles. Notre procédé spécial d'extraction à la vapeur élimine taches, allergènes et odeurs."
+        : "Revitalize your carpets and furniture. Specialized deep extraction process removes stains, allergens, and odors.",
+      image: "/images/service_carpet.png",
       href: "/services/carpet-upholstery-cleaning",
       icon: <Icons.Brush size={22} />,
     },
     {
-      title: "Window & Glass Cleaning",
-      desc: "Crystal-clear exterior and interior window washing. Bring bright, natural light back into your spaces.",
-      image: "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=600&q=80",
+      title: t("services.window.title"),
+      desc: language === "fr"
+        ? "Lavage de vitres intérieur et extérieur sans traces. Faites entrer à nouveau une lumière éclatante et naturelle."
+        : "Crystal-clear exterior and interior window washing. Bring bright, natural light back into your spaces.",
+      image: "/images/service_window.png",
       href: "/services/window-glass-cleaning",
       icon: <Icons.Waves size={22} />,
     },
@@ -119,26 +128,151 @@ export default function HomePage() {
 
   const faqs = [
     {
-      q: "Are your cleaners insured and bonded?",
-      a: "Yes, absolutely. All our professional cleaners are fully insured, bonded, and undergo rigorous background checks to ensure your peace of mind and security.",
+      q: language === "fr" ? "Vos nettoyeurs sont-ils assurés et cautionnés ?" : "Are your cleaners insured and bonded?",
+      a: language === "fr"
+        ? "Oui, absolument. Tous nos professionnels du nettoyage sont entièrement assurés, cautionnés et font l'objet d'une vérification rigoureuse des antécédents criminels pour votre tranquillité d'esprit et votre sécurité."
+        : "Yes, absolutely. All our professional cleaners are fully insured, bonded, and undergo rigorous background checks to ensure your peace of mind and security.",
     },
     {
-      q: "Do I need to supply the cleaning equipment and products?",
-      a: "No, you don't. Our team arrives fully equipped with commercial-grade vacuums, microfibers, and premium, eco-friendly cleaning solutions at no extra cost to you.",
+      q: language === "fr" ? "Dois-je fournir le matériel et les produits de nettoyage ?" : "Do I need to supply the cleaning equipment and products?",
+      a: language === "fr"
+        ? "Non, pas du tout. Notre équipe arrive entièrement équipée avec des aspirateurs de qualité commerciale, des microfibres et des solutions de nettoyage écologiques de premier choix, sans aucun coût supplémentaire pour vous."
+        : "No, you don't. Our team arrives fully equipped with commercial-grade vacuums, microfibers, and premium, eco-friendly cleaning solutions at no extra cost to you.",
     },
     {
-      q: "What is your 100% Satisfaction Guarantee?",
-      a: "We stand behind the quality of our work. If you are not completely satisfied with any area we've cleaned, simply call us within 24 hours and we will return to re-clean the area for free.",
+      q: language === "fr" ? "Quelle est votre garantie de satisfaction à 100% ?" : "What is your 100% Satisfaction Guarantee?",
+      a: language === "fr"
+        ? "Nous garantissons la qualité de notre travail. Si vous n'êtes pas entièrement satisfait d'une zone nettoyée, appelez-nous simplement dans les 24 heures et nous reviendrons la nettoyer gratuitement."
+        : "We stand behind the quality of our work. If you are not completely satisfied with any area we've cleaned, simply call us within 24 hours and we will return to re-clean the area for free.",
     },
     {
-      q: "How do you calculate your cleaning rates?",
-      a: "Our rates are based on the square footage of the space, the layout (bedrooms/bathrooms), and the specific type of service requested. Request a free quote online to get an exact customized estimate.",
+      q: language === "fr" ? "Comment calculez-vous vos tarifs de nettoyage ?" : "How do you calculate your cleaning rates?",
+      a: language === "fr"
+        ? "Nos tarifs sont basés sur la superficie de l'espace, la configuration (chambres/salles de bain) et le type de service demandé. Demandez un devis gratuit en ligne pour obtenir une estimation personnalisée exacte."
+        : "Our rates are based on the square footage of the space, the layout (bedrooms/bathrooms), and the specific type of service requested. Request a free quote online to get an exact customized estimate.",
     },
     {
-      q: "Can I schedule recurring cleanings?",
-      a: "Yes! We offer weekly, bi-weekly (every 2 weeks), and monthly schedules. Regular clients receive special discounted rates on all their ongoing cleaning sessions.",
+      q: language === "fr" ? "Puis-je planifier des nettoyages réguliers ?" : "Can I schedule recurring cleanings?",
+      a: language === "fr"
+        ? "Oui ! Nous proposons des formules hebdomadaires, bihebdomadaires (toutes les 2 semaines) et mensuelles. Les clients réguliers bénéficient de tarifs préférentiels sur toutes leurs sessions de nettoyage."
+        : "Yes! We offer weekly, bi-weekly (every 2 weeks), and monthly schedules. Regular clients receive special discounted rates on all their ongoing cleaning sessions.",
     },
   ];
+
+  const slides = language === "fr" ? [
+    {
+      id: 1,
+      title: "Restauration Complète de Cuisine",
+      service: "Nettoyage en profondeur",
+      location: "Richmond Hill",
+      desc: "Dégraissage en profondeur des surfaces, élimination des graisses tenaces et polissage des robinetteries en acier inoxydable.",
+      imageBefore: "/images/showcase_kitchen_before.png",
+      imageAfter: "/images/showcase_kitchen_after.png",
+    },
+    {
+      id: 2,
+      title: "Détartrage & Polissage de Salle de Bain",
+      service: "Nettoyage résidentiel",
+      location: "Toronto",
+      desc: "Élimination des dépôts de calcaire tenaces sur les parois de douche vitrées et désinfection complète des surfaces en marbre.",
+      imageBefore: "/images/showcase_bathroom_before.png",
+      imageAfter: "/images/showcase_bathroom_after.png",
+    },
+    {
+      id: 3,
+      title: "Restauration en Profondeur de Tapis",
+      service: "Nettoyage de tapis et meubles",
+      location: "Vaughan",
+      desc: "Extraction à la vapeur à haute température pour éliminer les taches de café, les allergènes incrustés et raviver les couleurs des fibres.",
+      imageBefore: "/images/showcase_carpet_before.png",
+      imageAfter: "/images/showcase_carpet_after.png",
+    },
+    {
+      id: 4,
+      title: "Polissage de Sol de Bureau",
+      service: "Nettoyage de bureaux",
+      location: "Brampton",
+      desc: "Nettoyage intensif et lustrage de sol en bois franc pour restaurer une finition brillante et éliminer les rayures de passage.",
+      imageBefore: "/images/showcase_floor_before.png",
+      imageAfter: "/images/showcase_floor_after.png",
+    }
+  ] : [
+    {
+      id: 1,
+      title: "Complete Kitchen Restoration",
+      service: "Deep Cleaning",
+      location: "Richmond Hill",
+      desc: "Thorough surface degreasing, range hood cleaning, and stainless steel fixture polishing.",
+      imageBefore: "/images/showcase_kitchen_before.png",
+      imageAfter: "/images/showcase_kitchen_after.png",
+    },
+    {
+      id: 2,
+      title: "Bathroom Descaling & Polishing",
+      service: "Residential Cleaning",
+      location: "Toronto",
+      desc: "Removal of stubborn limescale deposits on glass shower doors and complete sanitization of marble countertops.",
+      imageBefore: "/images/showcase_bathroom_before.png",
+      imageAfter: "/images/showcase_bathroom_after.png",
+    },
+    {
+      id: 3,
+      title: "Deep Carpet Extraction",
+      service: "Carpet & Upholstery Cleaning",
+      location: "Vaughan",
+      desc: "High-temperature steam extraction to remove coffee stains, deep allergens, and restore fiber color.",
+      imageBefore: "/images/showcase_carpet_before.png",
+      imageAfter: "/images/showcase_carpet_after.png",
+    },
+    {
+      id: 4,
+      title: "Office Hardwood Floor Buffing",
+      service: "Office Cleaning",
+      location: "Brampton",
+      desc: "Intensive floor scrubbing and buffing to restore a glassy, reflective finish and eliminate scratch marks.",
+      imageBefore: "/images/showcase_floor_before.png",
+      imageAfter: "/images/showcase_floor_after.png",
+    }
+  ];
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [isPaused, currentSlide]);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+  };
 
   return (
     <div className="w-full">
@@ -149,30 +283,30 @@ export default function HomePage() {
             {/* Text column */}
             <Reveal animationType="slide-in-left" className="space-y-8 text-center lg:text-left z-10">
               <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block">
-                Greater Toronto Area's Cleaning Leader
+                {t("home.hero.badge")}
               </span>
               <h1 className="font-montserrat font-extrabold text-4xl sm:text-5xl lg:text-6xl text-text-dark leading-tight">
-                Pristine Homes.
+                {t("home.hero.title1")}
                 <br />
-                <span className="text-primary">Spotless Offices.</span>
+                <span className="text-primary">{t("home.hero.title2")}</span>
               </h1>
               <p className="font-opensans text-text-muted text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Experience the luxury of a premium cleaning service. We deliver immaculate results with trained staff, eco-friendly products, and a 100% satisfaction guarantee.
+                {t("home.hero.desc")}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Button variant="primary" href="/quote">
-                  Get a Free Quote
+                  {t("home.hero.cta1")}
                 </Button>
                 <Button variant="outline" href="/services">
-                  Explore Services
+                  {t("home.hero.cta2")}
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-4 text-xs font-semibold text-text-dark font-opensans border-t border-gray-100 max-w-md mx-auto lg:mx-0">
                 <span className="flex items-center gap-1.5">
-                  <Icons.Check className="text-secondary" size={16} /> Fully Insured & Bonded
+                  <Icons.Check className="text-secondary" size={16} /> {t("home.hero.checked1")}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Icons.Check className="text-secondary" size={16} /> Eco-Friendly Products
+                  <Icons.Check className="text-secondary" size={16} /> {t("home.hero.checked2")}
                 </span>
               </div>
             </Reveal>
@@ -180,18 +314,11 @@ export default function HomePage() {
             {/* Image column */}
             <Reveal delay={200} animationType="fade-in-up" className="w-full">
               <div className="relative h-[350px] sm:h-[450px] lg:h-[500px] w-full rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
-                {!heroLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                    <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-                  </div>
-                )}
-                <img
-                  src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=80"
-                  alt="Professional Cleaning Services"
-                  onLoad={() => setHeroLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    heroLoaded ? "opacity-100" : "opacity-0"
-                  }`}
+                <SafeImage
+                  src="/images/hero_cleaning.png"
+                  alt="Professional Premium Cleaning Services in Toronto"
+                  priority={true}
+                  className="w-full h-full"
                 />
                 <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-xl flex items-center justify-between border border-gray-100 z-10">
                   <div className="flex items-center gap-4">
@@ -200,10 +327,10 @@ export default function HomePage() {
                     </div>
                     <div>
                       <h4 className="font-montserrat font-bold text-sm text-text-dark">
-                        Sparkling Guarantee
+                        {t("home.hero.sparkle")}
                       </h4>
                       <p className="font-opensans text-text-muted text-xs">
-                        100% Satisfaction or we re-clean
+                        {t("home.hero.sparkleDesc")}
                       </p>
                     </div>
                   </div>
@@ -214,7 +341,7 @@ export default function HomePage() {
                       ))}
                     </div>
                     <span className="font-opensans text-text-dark font-bold text-xs">
-                      4.9/5 on Google Reviews
+                      {t("home.hero.reviews")}
                     </span>
                   </div>
                 </div>
@@ -233,10 +360,10 @@ export default function HomePage() {
                 <Icons.ShieldCheck size={36} />
               </div>
               <h3 className="font-montserrat font-extrabold text-2xl text-text-dark">
-                Trusted & Verified
+                {t("home.stats.trusted")}
               </h3>
               <p className="text-text-muted text-sm max-w-xs mx-auto">
-                Every member of our crew undergoes extensive training and background checks.
+                {t("home.stats.trustedDesc")}
               </p>
             </Reveal>
             <Reveal animationType="fade-in-up" delay={150} className="space-y-2">
@@ -244,10 +371,10 @@ export default function HomePage() {
                 <Icons.Clock size={36} />
               </div>
               <h3 className="font-montserrat font-extrabold text-2xl text-text-dark">
-                Flexible Scheduling
+                {t("home.stats.flexible")}
               </h3>
               <p className="text-text-muted text-sm max-w-xs mx-auto">
-                Book cleanings on your schedule: weekly, bi-weekly, monthly, or one-off services.
+                {t("home.stats.flexibleDesc")}
               </p>
             </Reveal>
             <Reveal animationType="fade-in-up" delay={300} className="space-y-2">
@@ -255,10 +382,10 @@ export default function HomePage() {
                 <Icons.Sparkles size={36} />
               </div>
               <h3 className="font-montserrat font-extrabold text-2xl text-text-dark">
-                Premium Equipment
+                {t("home.stats.premium")}
               </h3>
               <p className="text-text-muted text-sm max-w-xs mx-auto">
-                We use high-grade HEPA filters and safe, non-toxic cleaning products.
+                {t("home.stats.premiumDesc")}
               </p>
             </Reveal>
           </div>
@@ -270,13 +397,13 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              What We Do
+              {t("home.overview.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-              Our Professional Cleaning Services
+              {t("home.overview.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm sm:text-base leading-relaxed">
-              We offer comprehensive residential and commercial cleaning solutions tailored to your unique requirements. Enjoy a pristine space without lifting a finger.
+              {t("home.overview.desc")}
             </p>
           </Reveal>
 
@@ -288,7 +415,7 @@ export default function HomePage() {
 
           <Reveal className="text-center mt-12">
             <Button variant="outline" href="/services">
-              View All Services
+              {t("home.overview.more")}
             </Button>
           </Reveal>
         </div>
@@ -301,18 +428,10 @@ export default function HomePage() {
             {/* Image stack */}
             <Reveal animationType="slide-in-left" className="w-full">
               <div className="relative h-[350px] lg:h-[450px] w-full rounded-3xl overflow-hidden shadow-lg bg-gray-100">
-                {!aboutLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                    <Icons.Sparkles className="text-gray-300 animate-spin" size={24} />
-                  </div>
-                )}
-                <img
-                  src="https://images.unsplash.com/photo-1528740564264-4a90d33d8114?auto=format&fit=crop&w=800&q=80"
+                <SafeImage
+                  src="/images/service_residential.png"
                   alt="Our Cleaning Standards"
-                  onLoad={() => setAboutLoaded(true)}
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    aboutLoaded ? "opacity-100" : "opacity-0"
-                  }`}
+                  className="w-full h-full"
                 />
               </div>
             </Reveal>
@@ -320,20 +439,20 @@ export default function HomePage() {
             {/* Text content */}
             <Reveal animationType="slide-in-right" className="space-y-6">
               <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-                Get to Know Us
+                {t("home.about.tag")}
               </span>
               <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-                Committed to Delivering Sparkling Results
+                {t("home.about.title")}
               </h2>
               <p className="font-opensans text-text-muted text-sm sm:text-base leading-relaxed">
-                Founded with a vision to redefine professional cleaning in Toronto, Inter-Cleaning Services has grown into one of the most trusted names in the GTA. We don't just clean; we sanitize, refresh, and care for your environment.
+                {t("home.about.desc1")}
               </p>
               <p className="font-opensans text-text-muted text-sm sm:text-base leading-relaxed">
-                Our approach combines top-tier hospitality standards with specialized sanitizing practices, ensuring your family, guests, and employees reside in absolute safety and clean comfort.
+                {t("home.about.desc2")}
               </p>
               <div className="pt-4">
                 <Button variant="primary" href="/about">
-                  Read Our Story
+                  {t("home.about.cta")}
                 </Button>
               </div>
             </Reveal>
@@ -346,13 +465,13 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Simple Steps
+              {t("home.steps.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-              How It Works
+              {t("home.steps.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm sm:text-base">
-              Getting your space cleaned is easy and stress-free. Follow these three simple steps.
+              {t("home.steps.desc")}
             </p>
           </Reveal>
 
@@ -362,10 +481,10 @@ export default function HomePage() {
                 1
               </div>
               <h3 className="font-montserrat font-bold text-lg text-text-dark">
-                Request a Quote
+                {t("home.steps.step1Title")}
               </h3>
               <p className="font-opensans text-text-muted text-sm leading-relaxed max-w-xs mx-auto">
-                Fill out our quick quote form online. Select your service, property type, and frequency.
+                {t("home.steps.step1Desc")}
               </p>
             </Reveal>
 
@@ -374,10 +493,10 @@ export default function HomePage() {
                 2
               </div>
               <h3 className="font-montserrat font-bold text-lg text-text-dark">
-                Schedule & Clean
+                {t("home.steps.step2Title")}
               </h3>
               <p className="font-opensans text-text-muted text-sm leading-relaxed max-w-xs mx-auto">
-                Confirm your slot. Our fully-vetted and equipped cleaning professionals arrive and do their magic.
+                {t("home.steps.step2Desc")}
               </p>
             </Reveal>
 
@@ -386,10 +505,10 @@ export default function HomePage() {
                 3
               </div>
               <h3 className="font-montserrat font-bold text-lg text-text-dark">
-                Enjoy Your Space
+                {t("home.steps.step3Title")}
               </h3>
               <p className="font-opensans text-text-muted text-sm leading-relaxed max-w-xs mx-auto">
-                Step into a spotless, fresh, and sanitized environment backed by our Satisfaction Guarantee.
+                {t("home.steps.step3Desc")}
               </p>
             </Reveal>
           </div>
@@ -401,109 +520,100 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Visible Quality
+              {t("home.showcase.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-              Before & After Showcase
+              {t("home.showcase.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm sm:text-base">
-              See the direct impact of our deep cleaning expertise in kitchens, carpets, and bathrooms.
+              {t("home.showcase.desc")}
             </p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Kitchen Showcase */}
-            <Reveal animationType="fade-in-up" delay={0} className="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col">
-              <div className="grid grid-cols-2">
-                <div className="relative h-64 w-full bg-gray-100">
-                  {!kitchenLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10" />
-                  )}
-                  <img
-                    src="https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=400&q=80"
-                    alt="Kitchen Before Cleaning"
-                    onLoad={() => setKitchenLoaded(true)}
-                    className={`w-full h-full object-cover grayscale brightness-75 transition-opacity duration-500 ${
-                      kitchenLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                  <span className="absolute top-4 left-4 bg-red-500 text-white font-montserrat text-2xs uppercase tracking-wider px-2 py-1 rounded font-bold z-25">
-                    Before
-                  </span>
-                </div>
-                <div className="relative h-64 w-full bg-gray-100">
-                  {!kitchenLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10" />
-                  )}
-                  <img
-                    src="https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=400&q=80"
-                    alt="Kitchen After Cleaning"
-                    onLoad={() => setKitchenLoaded(true)}
-                    className={`w-full h-full object-cover transition-opacity duration-500 ${
-                      kitchenLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                  <span className="absolute top-4 left-4 bg-green-500 text-white font-montserrat text-2xs uppercase tracking-wider px-2 py-1 rounded font-bold z-25">
-                    After
-                  </span>
-                </div>
+          {/* Carrousel Wrapper */}
+          <Reveal animationType="fade-in-up" className="relative max-w-5xl mx-auto bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex flex-col lg:flex-row h-auto min-h-[450px]">
+            <div 
+              className="w-full flex flex-col lg:flex-row"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {/* Visuals Column: Before & After comparison slider with real images */}
+              <div className="lg:w-3/5 relative h-[300px] sm:h-[400px] lg:h-auto min-h-[400px] flex">
+                <BeforeAfterSlider
+                  beforeImage={slides[currentSlide].imageBefore}
+                  afterImage={slides[currentSlide].imageAfter}
+                  altBefore={`${slides[currentSlide].title} Before`}
+                  altAfter={`${slides[currentSlide].title} After`}
+                  beforeLabel={language === "fr" ? "Avant" : "Before"}
+                  afterLabel={language === "fr" ? "Après" : "After"}
+                  className="w-full h-full"
+                />
               </div>
-              <div className="p-5 text-center flex-grow">
-                <h4 className="font-montserrat font-bold text-base text-text-dark">
-                  Deep Kitchen Cleaning
-                </h4>
-                <p className="font-opensans text-text-muted text-xs mt-1">
-                  Removal of heavy grease deposits and surface sanitization.
-                </p>
-              </div>
-            </Reveal>
 
-            {/* Bathroom Showcase */}
-            <Reveal animationType="fade-in-up" delay={150} className="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col">
-              <div className="grid grid-cols-2">
-                <div className="relative h-64 w-full bg-gray-100">
-                  {!bathroomLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10" />
-                  )}
-                  <img
-                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80"
-                    alt="Bathroom Before Cleaning"
-                    onLoad={() => setBathroomLoaded(true)}
-                    className={`w-full h-full object-cover grayscale brightness-50 transition-opacity duration-500 ${
-                      bathroomLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                  <span className="absolute top-4 left-4 bg-red-500 text-white font-montserrat text-2xs uppercase tracking-wider px-2 py-1 rounded font-bold z-25">
-                    Before
-                  </span>
+              {/* Content details Column */}
+              <div className="lg:w-2/5 p-8 sm:p-10 flex flex-col justify-between space-y-6">
+                <div className="space-y-4">
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="bg-primary/10 text-primary font-montserrat font-bold text-2xs uppercase tracking-widest px-3 py-1 rounded-full">
+                      {slides[currentSlide].service}
+                    </span>
+                    <span className="bg-gray-100 text-text-muted font-montserrat font-bold text-2xs uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
+                      <Icons.MapPin size={10} className="text-primary" /> {slides[currentSlide].location}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-montserrat font-extrabold text-2xl text-text-dark transition-colors duration-300">
+                    {slides[currentSlide].title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-text-muted text-sm leading-relaxed font-opensans">
+                    {slides[currentSlide].desc}
+                  </p>
                 </div>
-                <div className="relative h-64 w-full bg-gray-100">
-                  {!bathroomLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10" />
-                  )}
-                  <img
-                    src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80"
-                    alt="Bathroom After Cleaning"
-                    onLoad={() => setBathroomLoaded(true)}
-                    className={`w-full h-full object-cover transition-opacity duration-500 ${
-                      bathroomLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                  />
-                  <span className="absolute top-4 left-4 bg-green-500 text-white font-montserrat text-2xs uppercase tracking-wider px-2 py-1 rounded font-bold z-25">
-                    After
-                  </span>
+
+                {/* Navigation Buttons & Bullets info */}
+                <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
+                  {/* Left/Right navigation */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={prevSlide}
+                      aria-label="Previous Project"
+                      className="w-10 h-10 rounded-full border border-gray-200 text-text-muted hover:text-primary hover:border-primary flex items-center justify-center transition-all bg-white hover:shadow-sm cursor-pointer"
+                    >
+                      <Icons.ChevronRight className="rotate-180" size={20} />
+                    </button>
+                    <button
+                      onClick={nextSlide}
+                      aria-label="Next Project"
+                      className="w-10 h-10 rounded-full border border-gray-200 text-text-muted hover:text-primary hover:border-primary flex items-center justify-center transition-all bg-white hover:shadow-sm cursor-pointer"
+                    >
+                      <Icons.ChevronRight size={20} />
+                    </button>
+                  </div>
+
+                  {/* Dots pagination */}
+                  <div className="flex items-center gap-1.5">
+                    {slides.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentSlide(idx)}
+                        aria-label={`Go to project slide ${idx + 1}`}
+                        className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
+                          idx === currentSlide ? "bg-primary w-5" : "bg-gray-200 hover:bg-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="p-5 text-center flex-grow">
-                <h4 className="font-montserrat font-bold text-base text-text-dark">
-                  Grout & Tile Revitalization
-                </h4>
-                <p className="font-opensans text-text-muted text-xs mt-1">
-                  Complete mildew removal and scale elimination in showers.
-                </p>
-              </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -512,13 +622,13 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Happy Clients
+              {t("home.testimonials.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-text-dark">
-              What Our Customers Say
+              {t("home.testimonials.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm sm:text-base">
-              Read real feedback from homeowners and property managers across the Greater Toronto Area.
+              {t("home.testimonials.desc")}
             </p>
           </Reveal>
 
@@ -533,7 +643,9 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-text-dark text-sm italic leading-relaxed">
-                    "Absolutely amazing job! The team cleaned my condo in downtown Toronto before I moved in, and they left it looking brand new. The attention to detail in the kitchen and bathrooms was stunning."
+                    {language === "fr"
+                      ? "\"Travail absolument incroyable ! L'équipe a nettoyé mon condo au centre-ville de Toronto avant mon emménagement, et ils l'ont laissé comme neuf. L'attention aux détails dans la cuisine et les salles de bain était remarquable.\""
+                      : "\"Absolutely amazing job! The team cleaned my condo in downtown Toronto before I moved in, and they left it looking brand new. The attention to detail in the kitchen and bathrooms was stunning.\""}
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-gray-200/50 flex items-center gap-3">
@@ -542,7 +654,9 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4 className="font-montserrat font-bold text-sm text-text-dark">Sarah Miller</h4>
-                    <p className="font-opensans text-text-muted text-xs">Condo Owner, Toronto</p>
+                    <p className="font-opensans text-text-muted text-xs">
+                      {language === "fr" ? "Propriétaire de condo, Toronto" : "Condo Owner, Toronto"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -558,7 +672,9 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-text-dark text-sm italic leading-relaxed">
-                    "Inter-Cleaning Services handles our commercial office cleaning in Mississauga. They are consistently punctual, thorough, and highly professional. Highly recommend for any business."
+                    {language === "fr"
+                      ? "\"Inter-Cleaning Services s'occupe du nettoyage de nos bureaux commerciaux à Mississauga. Ils sont toujours ponctuels, minutieux et très professionnels. Recommandé vivement pour toute entreprise.\""
+                      : "\"Inter-Cleaning Services handles our commercial office cleaning in Mississauga. They are consistently punctual, thorough, and highly professional. Highly recommend for any business.\""}
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-gray-200/50 flex items-center gap-3">
@@ -567,7 +683,9 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4 className="font-montserrat font-bold text-sm text-text-dark">David Lee</h4>
-                    <p className="font-opensans text-text-muted text-xs">Operations Manager, Mississauga</p>
+                    <p className="font-opensans text-text-muted text-xs">
+                      {language === "fr" ? "Directeur des opérations, Mississauga" : "Operations Manager, Mississauga"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -583,7 +701,9 @@ export default function HomePage() {
                     ))}
                   </div>
                   <p className="text-text-dark text-sm italic leading-relaxed">
-                    "We have booked their bi-weekly residential service for our home in Markham. Coming back to a clean and fresh-smelling home is the best part of our week. Excellent customer service!"
+                    {language === "fr"
+                      ? "\"Nous avons réservé leur service résidentiel bihebdomadaire pour notre maison à Markham. Rentrer dans une maison propre et fraîche est le meilleur moment de notre semaine. Excellent service client !\""
+                      : "\"We have booked their bi-weekly residential service for our home in Markham. Coming back to a clean and fresh-smelling home is the best part of our week. Excellent customer service!\""}
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-gray-200/50 flex items-center gap-3">
@@ -592,7 +712,9 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4 className="font-montserrat font-bold text-sm text-text-dark">Rebecca K.</h4>
-                    <p className="font-opensans text-text-muted text-xs">Homeowner, Markham</p>
+                    <p className="font-opensans text-text-muted text-xs">
+                      {language === "fr" ? "Propriétaire, Markham" : "Homeowner, Markham"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -606,13 +728,13 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Have Questions?
+              {t("home.faq.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Frequently Asked Questions
+              {t("home.faq.title")}
             </h2>
             <p className="font-opensans text-text-muted text-sm">
-              Find answers to common questions about our services and booking details.
+              {t("home.faq.desc")}
             </p>
           </Reveal>
 
@@ -652,17 +774,17 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#f11582] via-primary to-[#b00a5c] opacity-80"></div>
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
           <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl leading-tight">
-            Ready to Experience the Ultimate Clean?
+            {t("home.cta.title")}
           </h2>
           <p className="font-opensans text-white/90 text-base sm:text-lg max-w-xl mx-auto">
-            Book now and get a customized quote for your home or business. Our cleaning experts are ready to make your space shine.
+            {t("home.cta.desc")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="secondary" href="/quote">
-              Request a Free Quote
+              {t("home.cta.cta1")}
             </Button>
             <Button variant="white" href="/contact" className="border-2 border-white/10 hover:border-white">
-              Contact Our Office
+              {t("home.cta.cta2")}
             </Button>
           </div>
         </Reveal>

@@ -5,12 +5,55 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function DeepCleaningPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
-  const checklist = [
+  const toggleFaq = (index: number | null) => {
+    setOpenFaq(index);
+  };
+
+  const checklist = language === "fr" ? [
+    {
+      title: "Nettoyage de cuisine",
+      items: [
+        "Nettoyer l'intérieur du four, du micro-ondes et les grilles de la cuisinière",
+        "Nettoyer l'intérieur du réfrigérateur et du congélateur (si vides)",
+        "Dégraisser la hotte, le ventilateur d'extraction et les filtres",
+        "Essuyer les façades, charnières et poignées de placards",
+      ],
+    },
+    {
+      title: "Détartrage de salle de bain",
+      items: [
+        "Détartrer les portes vitrées, les pommes de douche et la robinetterie",
+        "Éliminer les moisissures et les taches des joints de carrelage et de silicone",
+        "Récurer en profondeur les carreaux muraux et les grilles d'aération",
+        "Désinfecter les poubelles et nettoyer derrière la base des toilettes",
+      ],
+    },
+    {
+      title: "Finitions & Menuiserie",
+      items: [
+        "Essuyer à la main les plinthes, cadres de portes et panneaux",
+        "Nettoyer les bouches de chauffage, prises et plaques d'interrupteurs",
+        "Essuyer les cadres, rails, rebords de fenêtres et stores",
+        "Épousseter les charnières et les chants supérieurs des portes",
+      ],
+    },
+    {
+      title: "Assainissement général",
+      items: [
+        "Épousseter en hauteur les ventilateurs de plafond, luminaires et angles",
+        "Passer l'aspirateur sous les lits, canapés et grands tapis",
+        "Essuyer les plinthes et désinfecter les surfaces fréquemment touchées",
+        "Essuyer avec un chiffon humide les radiateurs et leurs caches",
+      ],
+    },
+  ] : [
     {
       title: "Kitchen Deep-Clean",
       items: [
@@ -49,7 +92,20 @@ export default function DeepCleaningPage() {
     },
   ];
 
-  const steps = [
+  const steps = language === "fr" ? [
+    {
+      title: "Inspection préalable au nettoyage",
+      desc: "Nous examinons l'espace pour identifier le calcaire tenace, l'accumulation de graisse et les zones nécessitant un traitement spécial.",
+    },
+    {
+      title: "Récurer en profondeur & Désinfecter",
+      desc: "Nos nettoyeurs exécutent notre liste de contrôle détaillée pour le récurage des plinthes, des fours et des joints.",
+    },
+    {
+      title: "Validation qualité par un superviseur",
+      desc: "Une inspection finale par un superviseur garantit que toutes les surfaces, hautes et basses, sont parfaitement propres.",
+    },
+  ] : [
     {
       title: "Pre-Clean Inspection",
       desc: "We scan the space to identify heavy scale, grease buildup, and areas requiring special treatment.",
@@ -64,7 +120,20 @@ export default function DeepCleaningPage() {
     },
   ];
 
-  const faqs = [
+  const faqs = language === "fr" ? [
+    {
+      q: "Quelle est la différence entre un nettoyage régulier et un nettoyage en profondeur ?",
+      a: "Un nettoyage régulier couvre le dépoussiérage des surfaces, l'aspirateur et la serpillière générale. Un nettoyage en profondeur cible la saleté cachée, l'accumulation de calcaire, l'intérieur des appareils électroménagers (four et réfrigérateur) et l'essuyage manuel détaillé des plinthes et encadrements.",
+    },
+    {
+      q: "À quelle fréquence dois-je réserver un service de nettoyage en profondeur ?",
+      a: "Nous recommandons de réserver un nettoyage en profondeur au moins 2 à 3 fois par an (au printemps et à l'automne) pour contrôler l'accumulation de poussière et de calcaire, ou avant de commencer un service régulier récurrent.",
+    },
+    {
+      q: "Combien de temps prend un nettoyage en profondeur ?",
+      a: "En raison du récurage minutieux requis, les nettoyages en profondeur durent plus longtemps que les nettoyages standard. Selon la taille et l'état initial de la propriété, ils peuvent prendre de 4 à 8 heures.",
+    },
+  ] : [
     {
       q: "What is the difference between a regular clean and a deep clean?",
       a: "A regular clean covers surface dusting, vacuuming, and general mopping. A deep clean targets hidden dirt, limescale build-up, interior appliances (like ovens and fridges), and detailed hand-wiping of baseboards and frames.",
@@ -83,18 +152,10 @@ export default function DeepCleaningPage() {
     <div className="w-full font-opensans bg-white">
       {/* Service Hero */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center bg-gray-100">
-        {!heroLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
-            <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-          </div>
-        )}
-        <img
-          src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80"
+        <SafeImage
+          src="/images/service_deep.png"
           alt="Premium Deep Cleaning"
-          onLoad={() => setHeroLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10"></div>
 
@@ -103,19 +164,19 @@ export default function DeepCleaningPage() {
             href="/services"
             className="flex items-center gap-1.5 text-xs text-primary font-montserrat font-bold uppercase tracking-wider hover:underline"
           >
-            <Icons.ChevronRight className="rotate-180" size={14} /> Back to Services
+            <Icons.ChevronRight className="rotate-180" size={14} /> {t("nav.backToServices")}
           </Link>
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-            Top-To-Bottom Scrub
+            {t("services.deep.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl text-text-dark max-w-xl">
-            Deep Cleaning Services
+            {t("services.deep.title")}
           </h1>
           <p className="text-text-muted text-sm sm:text-base max-w-lg leading-relaxed">
-            Intensive sanitization and detail scrubbing for your home or business premises. Perfect for seasonal touch-ups in the GTA.
+            {t("services.deep.desc")}
           </p>
           <Button variant="primary" href="/quote">
-            Request a Quote
+            {t("nav.quote")}
           </Button>
         </Reveal>
       </section>
@@ -124,10 +185,10 @@ export default function DeepCleaningPage() {
       <section className="py-20 bg-white">
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-text-dark">
-            Eliminate Stubborn Dirt with Our Deep Clean
+            {t("services.deep.h2")}
           </h2>
           <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-            Sometimes, a standard dust-and-wipe isn't enough. Over time, grease accumulates behind stoves, scale builds up on shower screens, and dust settles on baseboards. Our premium Deep Cleaning service is a thorough, top-to-bottom sanitize designed to return your property to its original, spotless glory. We bring industrial scrubbing supplies and take the time to clean every minor detail.
+            {t("services.deep.p")}
           </p>
         </Reveal>
       </section>
@@ -137,13 +198,13 @@ export default function DeepCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Detail Routine
+              {t("services.deep.checklistTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Deep Cleaning Checklist
+              {t("services.deep.checklistTitle")}
             </h2>
             <p className="text-text-muted text-sm">
-              Our most comprehensive package. Here is a breakdown of what our experts tackle:
+              {t("services.deep.checklistDesc")}
             </p>
           </Reveal>
 
@@ -180,10 +241,10 @@ export default function DeepCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Process
+              {t("services.deep.processTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Precision Cleaning Steps
+              {t("services.deep.processTitle")}
             </h2>
           </Reveal>
 
@@ -206,7 +267,7 @@ export default function DeepCleaningPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-12">
             <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-              Deep Clean FAQ
+              {t("services.deep.faqTitle")}
             </h2>
           </Reveal>
 
@@ -215,7 +276,7 @@ export default function DeepCleaningPage() {
               <Reveal key={idx} delay={idx * 100} animationType="fade-in-up">
                 <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
                   <button
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    onClick={() => toggleFaq(openFaq === idx ? null : idx)}
                     className="flex items-center justify-between w-full p-5 text-left focus:outline-none cursor-pointer"
                   >
                     <span className="font-montserrat font-bold text-sm text-text-dark">{faq.q}</span>
@@ -239,14 +300,14 @@ export default function DeepCleaningPage() {
       <section className="bg-primary py-16 text-white text-center">
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-white">
-            Schedule Your Seasonal Deep Clean Today
+            {t("services.deep.ctaTitle")}
           </h2>
           <p className="text-white/90 text-sm max-w-md mx-auto">
-            Get an instant custom estimate and let our certified cleaning experts revive your space.
+            {t("services.deep.ctaDesc")}
           </p>
           <div className="pt-2">
             <Button variant="secondary" href="/quote">
-              Request a Free Quote
+              {t("services.page.ctaBtn")}
             </Button>
           </div>
         </Reveal>

@@ -5,12 +5,55 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function CarpetCleaningPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const { t, language } = useTranslation();
 
-  const checklist = [
+  const toggleFaq = (index: number | null) => {
+    setOpenFaq(index);
+  };
+
+  const checklist = language === "fr" ? [
+    {
+      title: "Nettoyage de tapis à la vapeur",
+      items: [
+        "Aspiration préalable pour éliminer la poussière et la saleté sèche",
+        "Extraction à la vapeur haute température (extraction à l'eau chaude)",
+        "Prétraitement des zones de passage et des taches tenaces",
+        "Souffleurs à séchage rapide et redressement des fibres",
+      ],
+    },
+    {
+      title: "Neutraliseur d'odeurs & taches",
+      items: [
+        "Traitement des taches d'animaux et dégradation enzymatique",
+        "Neutralisation des taches de café, thé, encre et graisse",
+        "Désodorisation en profondeur des fibres de tapis",
+        "Formules désinfectantes écologiques (sans résidus toxiques)",
+      ],
+    },
+    {
+      title: "Canapés & Tissus d'ameublement",
+      items: [
+        "Test du tissu pour garantir la stabilité des teintures et des fibres",
+        "Aspiration douce des coussins et des interstices",
+        "Nettoyage manuel à faible humidité des appuis-tête et accoudoirs",
+        "Désinfection du rembourrage sous-jacent",
+      ],
+    },
+    {
+      title: "Protection des tissus",
+      items: [
+        "Application d'un protecteur anti-taches et anti-déversement",
+        "Traitement antistatique (sur demande)",
+        "Extraction des acariens et des allergènes",
+        "Traitement raviveur de couleurs",
+      ],
+    },
+  ] : [
     {
       title: "Steam Carpet Clean",
       items: [
@@ -49,7 +92,20 @@ export default function CarpetCleaningPage() {
     },
   ];
 
-  const steps = [
+  const steps = language === "fr" ? [
+    {
+      title: "Aspirer & Prétraiter",
+      desc: "Nous extrayons la saleté superficielle et appliquons des solutions non toxiques pour dissoudre les taches incrustées.",
+    },
+    {
+      title: "Extraction à la vapeur",
+      desc: "Notre système à haute pression injecte de l'eau chaude et aspire la saleté, les acariens et les résidus de savon.",
+    },
+    {
+      title: "Séchage & Protection",
+      desc: "Nous appliquons un protecteur de fibres et installons des séchoirs pour réduire le temps de séchage à 4-6 heures.",
+    },
+  ] : [
     {
       title: "Vacuum & Pre-Treat",
       desc: "We extract loose dirt and apply specialized, non-toxic solutions to break down deep stains.",
@@ -64,7 +120,20 @@ export default function CarpetCleaningPage() {
     },
   ];
 
-  const faqs = [
+  const faqs = language === "fr" ? [
+    {
+      q: "Combien de temps faut-il pour que les tapis et les canapés sèchent ?",
+      a: "Grâce à nos machines d'extraction haute performance, les tapis sèchent généralement en 4 à 6 heures. Les tissus d'ameublement peuvent prendre de 6 à 8 heures selon la ventilation et la température ambiante.",
+    },
+    {
+      q: "Déplacez-vous les meubles pendant le nettoyage ?",
+      a: "Nos agents peuvent déplacer les meubles légers (chaises, petites tables et canapés) pour nettoyer en dessous. Nous ne déplaçons pas les meubles lourds comme les armoires, grands lits ou bibliothèques.",
+    },
+    {
+      q: "Pouvez-vous éliminer toutes les taches et odeurs d'animaux ?",
+      a: "Nous utilisons des traitements enzymatiques professionnels qui décomposent les déchets organiques au niveau moléculaire. Bien que nous éliminions 95 % des taches et odeurs, les résultats dépendent de l'ancienneté de la tache.",
+    },
+  ] : [
     {
       q: "How long does it take for carpets and sofas to dry?",
       a: "With our advanced high-extraction machinery, carpets typically dry within 4 to 6 hours. Upholstery may take slightly longer (6 to 8 hours) depending on ventilation and room temperature.",
@@ -83,18 +152,10 @@ export default function CarpetCleaningPage() {
     <div className="w-full font-opensans bg-white">
       {/* Service Hero */}
       <section className="relative h-[300px] sm:h-[400px] lg:h-[480px] w-full flex items-center justify-center bg-gray-100">
-        {!heroLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center z-10">
-            <Icons.Sparkles className="text-gray-300 animate-spin" size={32} />
-          </div>
-        )}
-        <img
-          src="https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=1200&q=80"
+        <SafeImage
+          src="/images/service_carpet.png"
           alt="Premium Carpet & Upholstery Cleaning"
-          onLoad={() => setHeroLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-            heroLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-10"></div>
 
@@ -103,19 +164,19 @@ export default function CarpetCleaningPage() {
             href="/services"
             className="flex items-center gap-1.5 text-xs text-primary font-montserrat font-bold uppercase tracking-wider hover:underline"
           >
-            <Icons.ChevronRight className="rotate-180" size={14} /> Back to Services
+            <Icons.ChevronRight className="rotate-180" size={14} /> {t("nav.backToServices")}
           </Link>
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full">
-            Fiber Restoration
+            {t("services.carpet.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-3xl sm:text-4xl lg:text-5xl text-text-dark max-w-xl">
-            Carpet & Upholstery Cleaning
+            {t("services.carpet.title")}
           </h1>
           <p className="text-text-muted text-sm sm:text-base max-w-lg leading-relaxed">
-            Revitalize your home carpets, area rugs, and upholstered furniture. Specialized steam extraction across Toronto & the GTA.
+            {t("services.carpet.desc")}
           </p>
           <Button variant="primary" href="/quote">
-            Request a Quote
+            {t("nav.quote")}
           </Button>
         </Reveal>
       </section>
@@ -124,10 +185,10 @@ export default function CarpetCleaningPage() {
       <section className="py-20 bg-white">
         <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-text-dark">
-            Extend the Lifespan of Your Carpets & Sofas
+            {t("services.carpet.h2")}
           </h2>
           <p className="text-text-muted text-sm sm:text-base leading-relaxed">
-            Carpets and upholstered furniture act as giant air filters, trapping dust, pet dander, pollen, and bacteria. Over time, these particles grind into fabric fibers, causing discoloration, odors, and premature wear. Our premium Carpet & Upholstery cleaning service uses professional hot-water extraction and eco-friendly enzymes to lift deep-seated grime and neutralize allergens, leaving your home clean and fresh.
+            {t("services.carpet.p")}
           </p>
         </Reveal>
       </section>
@@ -137,13 +198,13 @@ export default function CarpetCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Fabric Care
+              {t("services.carpet.checklistTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Carpet & Upholstery Checklist
+              {t("services.carpet.checklistTitle")}
             </h2>
             <p className="text-text-muted text-sm">
-              We clean all fabrics with care. Here is what is covered in our fiber package:
+              {t("services.carpet.checklistDesc")}
             </p>
           </Reveal>
 
@@ -180,10 +241,10 @@ export default function CarpetCleaningPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-3">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Expert Method
+              {t("services.carpet.processTag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Steam Extraction Process
+              {t("services.carpet.processTitle")}
             </h2>
           </Reveal>
 
@@ -206,7 +267,7 @@ export default function CarpetCleaningPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center mb-12">
             <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-              Carpet Care FAQ
+              {t("services.carpet.faqTitle")}
             </h2>
           </Reveal>
 
@@ -215,7 +276,7 @@ export default function CarpetCleaningPage() {
               <Reveal key={idx} delay={idx * 100} animationType="fade-in-up">
                 <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
                   <button
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    onClick={() => toggleFaq(openFaq === idx ? null : idx)}
                     className="flex items-center justify-between w-full p-5 text-left focus:outline-none cursor-pointer"
                   >
                     <span className="font-montserrat font-bold text-sm text-text-dark">{faq.q}</span>
@@ -239,14 +300,14 @@ export default function CarpetCleaningPage() {
       <section className="bg-primary py-16 text-white text-center">
         <Reveal animationType="scale-up" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl text-white">
-            Give Your Carpets and Sofas a Fresh Lease on Life
+            {t("services.carpet.ctaTitle")}
           </h2>
           <p className="text-white/90 text-sm max-w-md mx-auto">
-            Book our professional steam cleaning services today. Fast drying, deep stain extraction.
+            {t("services.carpet.ctaDesc")}
           </p>
           <div className="pt-2">
             <Button variant="secondary" href="/quote">
-              Request a Free Quote
+              {t("services.page.ctaBtn")}
             </Button>
           </div>
         </Reveal>

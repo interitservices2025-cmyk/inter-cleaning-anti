@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icons } from "../ui/Icons";
 import Button from "../ui/Button";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface NavLink {
   label: string;
@@ -12,30 +13,32 @@ interface NavLink {
   submenu?: { label: string; href: string }[];
 }
 
-const navLinks: NavLink[] = [
-  { label: "Home", href: "/home" },
-  { label: "About Us", href: "/about" },
-  {
-    label: "Services",
-    href: "/services",
-    submenu: [
-      { label: "Residential Cleaning", href: "/services/residential-cleaning" },
-      { label: "Office & Small Business", href: "/services/office-cleaning" },
-      { label: "Deep Cleaning", href: "/services/deep-cleaning" },
-      { label: "Move-In / Move-Out", href: "/services/move-in-move-out" },
-      { label: "Carpet & Upholstery", href: "/services/carpet-upholstery-cleaning" },
-      { label: "Window & Glass", href: "/services/window-glass-cleaning" },
-    ],
-  },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" },
-];
-
 export default function Header() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  const { t, language, setLanguage } = useTranslation();
+
+  const navLinks: NavLink[] = [
+    { label: t("nav.home"), href: "/home" },
+    { label: t("nav.about"), href: "/about" },
+    {
+      label: t("nav.services"),
+      href: "/services",
+      submenu: [
+        { label: t("services.residential.title"), href: "/services/residential-cleaning" },
+        { label: t("services.office.title"), href: "/services/office-cleaning" },
+        { label: t("services.deep.title"), href: "/services/deep-cleaning" },
+        { label: t("services.move.title"), href: "/services/move-in-move-out" },
+        { label: t("services.carpet.title"), href: "/services/carpet-upholstery-cleaning" },
+        { label: t("services.window.title"), href: "/services/window-glass-cleaning" },
+      ],
+    },
+    { label: t("nav.careers"), href: "/careers" },
+    { label: t("nav.contact"), href: "/contact" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -128,7 +131,7 @@ export default function Header() {
 
                 {/* Submenu Dropdown */}
                 {link.submenu && activeDropdown === link.label && (
-                  <div className="absolute left-0 mt-1 w-64 bg-white border border-gray-100 rounded-2xl shadow-xl py-3 transform origin-top transition-all duration-200 animate-fadeIn">
+                  <div className="absolute left-0 mt-1 w-72 bg-white border border-gray-100 rounded-2xl shadow-xl py-3 transform origin-top transition-all duration-200 animate-fadeIn">
                     {link.submenu.map((subitem) => (
                       <Link
                         key={subitem.label}
@@ -149,9 +152,32 @@ export default function Header() {
           </nav>
 
           {/* Right CTA */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center">
+            {/* Language Selector */}
+            <div className="flex items-center gap-1 mr-6 text-xs font-bold border border-gray-200 rounded-full p-1 bg-gray-50/50 shadow-inner">
+              <button
+                onClick={() => setLanguage("en")}
+                className={`px-3 py-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  language === "en"
+                    ? "bg-primary text-white shadow-md transform scale-105"
+                    : "text-text-dark hover:text-primary"
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLanguage("fr")}
+                className={`px-3 py-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                  language === "fr"
+                    ? "bg-primary text-white shadow-md transform scale-105"
+                    : "text-text-dark hover:text-primary"
+                }`}
+              >
+                FR
+              </button>
+            </div>
             <Button variant="primary" href="/quote">
-              Get a Quote
+              {t("nav.quote")}
             </Button>
           </div>
 
@@ -232,9 +258,36 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="mt-8 space-y-4">
+          <div className="mt-8 space-y-6">
+            {/* Mobile Language Selector */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
+              <span className="font-montserrat font-bold text-sm text-text-dark">Language / Langue</span>
+              <div className="flex items-center gap-1 text-xs font-bold border border-gray-200 rounded-full p-1 bg-white shadow-inner">
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`px-3 py-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    language === "en"
+                      ? "bg-primary text-white shadow-md"
+                      : "text-text-dark hover:text-primary"
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => setLanguage("fr")}
+                  className={`px-3 py-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    language === "fr"
+                      ? "bg-primary text-white shadow-md"
+                      : "text-text-dark hover:text-primary"
+                  }`}
+                >
+                  FR
+                </button>
+              </div>
+            </div>
+
             <Button variant="primary" href="/quote" className="w-full">
-              Get a Quote
+              {t("nav.quote")}
             </Button>
             <div className="flex items-center gap-3 justify-center text-text-muted text-sm pt-4 border-t border-gray-100">
               <Icons.Phone size={16} className="text-secondary" />
@@ -248,3 +301,4 @@ export default function Header() {
     </header>
   );
 }
+

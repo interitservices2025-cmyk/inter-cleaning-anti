@@ -1,9 +1,14 @@
+"use client";
+
 import React from "react";
 import ContactForm from "@/components/forms/ContactForm";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ContactPage() {
+  const { t } = useTranslation();
+
   const serviceAreas = [
     { city: "Toronto", zip: "M5C / M4B" },
     { city: "Mississauga", zip: "L5A / L4T" },
@@ -21,13 +26,13 @@ export default function ContactPage() {
       <section className="bg-brand-light py-20 border-b border-gray-100">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block">
-            Get in Touch
+            {t("contact.hero.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-4xl sm:text-5xl text-text-dark max-w-3xl mx-auto leading-tight">
-            We'd Love to Hear From You
+            {t("contact.hero.title")}
           </h1>
           <p className="text-text-muted text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            Have questions about our cleaning checklists or scheduling? Contact our Brampton office today.
+            {t("contact.hero.desc")}
           </p>
         </Reveal>
       </section>
@@ -39,13 +44,13 @@ export default function ContactPage() {
           <Reveal animationType="slide-in-left" className="space-y-10">
             <div className="space-y-4">
               <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-                Our Office
+                {t("contact.info.tag")}
               </span>
               <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-                Contact Information
+                {t("contact.info.title")}
               </h2>
               <p className="text-text-muted text-sm leading-relaxed">
-                Our customer care representatives are available Monday through Sunday to assist you with scheduling, estimates, and customer support.
+                {t("contact.info.desc")}
               </p>
             </div>
 
@@ -55,9 +60,9 @@ export default function ContactPage() {
                 <div className="bg-primary/10 text-primary p-3 rounded-2xl inline-block">
                   <Icons.Phone size={22} />
                 </div>
-                <h4 className="font-montserrat font-bold text-base text-text-dark">Call Us</h4>
+                <h4 className="font-montserrat font-bold text-base text-text-dark">{t("contact.info.callUs")}</h4>
                 <p className="text-text-muted text-xs leading-relaxed">
-                  Speak directly with an agent:
+                  {t("contact.info.callDesc")}
                 </p>
                 <a href="tel:+14168719045" className="block text-primary font-bold text-sm hover:underline">
                   +1 (416) 871-9045
@@ -69,9 +74,9 @@ export default function ContactPage() {
                 <div className="bg-primary/10 text-primary p-3 rounded-2xl inline-block">
                   <Icons.Mail size={22} />
                 </div>
-                <h4 className="font-montserrat font-bold text-base text-text-dark">Email Us</h4>
+                <h4 className="font-montserrat font-bold text-base text-text-dark">{t("contact.info.emailUs")}</h4>
                 <p className="text-text-muted text-xs leading-relaxed">
-                  Send us a general inquiry:
+                  {t("contact.info.emailDesc")}
                 </p>
                 <a href="mailto:contact@inter-cleaningservices.com" className="block text-primary font-bold text-sm hover:underline">
                   contact@inter-cleaningservices.com
@@ -83,9 +88,9 @@ export default function ContactPage() {
                 <div className="bg-primary/10 text-primary p-3 rounded-2xl inline-block">
                   <Icons.MapPin size={22} />
                 </div>
-                <h4 className="font-montserrat font-bold text-base text-text-dark">Office Headquarters</h4>
+                <h4 className="font-montserrat font-bold text-base text-text-dark">{t("contact.info.addressTitle")}</h4>
                 <p className="text-text-muted text-xs leading-relaxed">
-                  Visit us in Brampton (Appointments only):
+                  {t("contact.info.addressDesc")}
                 </p>
                 <span className="block text-text-dark text-sm font-semibold">
                   Brampton, Ontario, L6W 3L3, Canada
@@ -96,10 +101,10 @@ export default function ContactPage() {
             {/* Service Areas */}
             <div className="pt-8 border-t border-gray-100 space-y-4">
               <h4 className="font-montserrat font-bold text-base text-text-dark">
-                Service Areas (Greater Toronto Area)
+                {t("contact.areas.title")}
               </h4>
               <p className="text-text-muted text-xs leading-relaxed">
-                We service homes and commercial properties within a 50km radius of downtown Toronto:
+                {t("contact.areas.desc")}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {serviceAreas.map((area) => (
@@ -130,13 +135,13 @@ export default function ContactPage() {
       <section className="py-20 bg-brand-light border-y border-gray-100 text-center space-y-8">
         <Reveal animationType="fade-in-up" className="max-w-xl mx-auto space-y-3">
           <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-            Coverage Area
+            {t("contact.map.tag")}
           </span>
           <h2 className="font-montserrat font-extrabold text-2xl text-text-dark">
-            Our GTA Coverage Zone
+            {t("contact.map.title")}
           </h2>
           <p className="text-text-muted text-xs leading-relaxed">
-            Our fully equipped crews travel to residential and commercial properties throughout the highlighted zones.
+            {t("contact.map.desc")}
           </p>
         </Reveal>
 
@@ -207,9 +212,9 @@ export default function ContactPage() {
             </g>
 
             {/* Coverage badge tag */}
-            <rect x="330" y="20" width="140" height="30" rx="15" fill="#DC0D73" />
+            <rect x="300" y="20" width="200" height="30" rx="15" fill="#DC0D73" />
             <text x="400" y="38" fill="#FFFFFF" textAnchor="middle" className="font-bold text-[9px] uppercase tracking-wider">
-              GTA Active Zone
+              {t("contact.map.badge")}
             </text>
           </svg>
         </Reveal>

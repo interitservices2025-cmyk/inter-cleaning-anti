@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import Button from "../ui/Button";
 import { Icons } from "../ui/Icons";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function CareerForm() {
+  const { t, language } = useTranslation();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,10 +21,30 @@ export default function CareerForm() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const positions = [
-    { label: "Residential Cleaning Specialist (Full-Time)", value: "residential-ft" },
-    { label: "Commercial Cleaning Crew (Part-Time)", value: "commercial-pt" },
-    { label: "Deep Cleaning & Carpet Expert (Full-Time)", value: "carpet-expert" },
-    { label: "Cleaning Supervisor (Full-Time)", value: "supervisor" },
+    {
+      label: language === "fr"
+        ? "Spécialiste en nettoyage résidentiel (Temps plein)"
+        : "Residential Cleaning Specialist (Full-Time)",
+      value: "residential-ft"
+    },
+    {
+      label: language === "fr"
+        ? "Équipe de nettoyage commercial (Temps partiel)"
+        : "Commercial Cleaning Crew (Part-Time)",
+      value: "commercial-pt"
+    },
+    {
+      label: language === "fr"
+        ? "Expert en nettoyage en profondeur et tapis (Temps plein)"
+        : "Deep Cleaning & Carpet Expert (Full-Time)",
+      value: "carpet-expert"
+    },
+    {
+      label: language === "fr"
+        ? "Superviseur de nettoyage (Temps plein)"
+        : "Cleaning Supervisor (Full-Time)",
+      value: "supervisor"
+    },
   ];
 
   const handleChange = (
@@ -62,14 +85,13 @@ export default function CareerForm() {
           <Icons.Check className="text-green-500" size={32} />
         </div>
         <h3 className="font-montserrat font-bold text-xl text-text-dark mb-2">
-          Application Submitted!
+          {t("forms.careerSuccess")}
         </h3>
         <p className="text-text-muted mb-6 text-sm">
-          Thank you for your interest in joining Inter-Cleaning Services. Our recruitment team will
-          review your application and contact you if your profile matches our needs.
+          {t("forms.careerSuccessDesc")}
         </p>
         <Button variant="primary" onClick={() => setIsSuccess(false)}>
-          Apply for Another Role
+          {language === "fr" ? "Postuler pour un autre rôle" : "Apply for Another Role"}
         </Button>
       </div>
     );
@@ -78,13 +100,13 @@ export default function CareerForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5 bg-white border border-gray-100 rounded-3xl shadow-lg p-8 font-opensans">
       <h3 className="font-montserrat font-extrabold text-xl text-text-dark mb-4">
-        Apply Now
+        {t("forms.careerTitle")}
       </h3>
       <div className="space-y-4">
         {/* Name */}
         <div className="space-y-1">
           <label htmlFor="name" className="text-xs font-semibold text-text-dark">
-            Full Name *
+            {t("forms.name")}
           </label>
           <input
             type="text"
@@ -102,7 +124,7 @@ export default function CareerForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label htmlFor="email" className="text-xs font-semibold text-text-dark">
-              Email Address *
+              {t("forms.email")}
             </label>
             <input
               type="email"
@@ -117,7 +139,7 @@ export default function CareerForm() {
           </div>
           <div className="space-y-1">
             <label htmlFor="phone" className="text-xs font-semibold text-text-dark">
-              Phone Number *
+              {t("forms.phone")}
             </label>
             <input
               type="tel"
@@ -135,7 +157,7 @@ export default function CareerForm() {
         {/* Position */}
         <div className="space-y-1">
           <label htmlFor="position" className="text-xs font-semibold text-text-dark">
-            Position of Interest *
+            {t("forms.position")}
           </label>
           <select
             id="position"
@@ -145,7 +167,7 @@ export default function CareerForm() {
             onChange={handleChange}
             className="w-full px-4 py-2.5 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm cursor-pointer"
           >
-            <option value="">Select a role</option>
+            <option value="">{t("forms.selectRole")}</option>
             {positions.map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
@@ -157,7 +179,7 @@ export default function CareerForm() {
         {/* Resume upload */}
         <div className="space-y-1">
           <label className="text-xs font-semibold text-text-dark block">
-            Upload CV / Resume *
+            {t("forms.uploadCv")}
           </label>
           <div className="flex items-center justify-center w-full">
             <label
@@ -167,9 +189,9 @@ export default function CareerForm() {
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Icons.Sparkles className="w-8 h-8 text-primary mb-2" />
                 <p className="text-xs text-text-dark font-semibold">
-                  {resumeName ? resumeName : "Click to upload CV (PDF or DOCX)"}
+                  {resumeName ? resumeName : t("forms.uploadPlaceholder")}
                 </p>
-                <p className="text-xxs text-text-muted mt-1">Max file size: 5MB</p>
+                <p className="text-xxs text-text-muted mt-1">{t("forms.maxSize")}</p>
               </div>
               <input
                 id="resume"
@@ -186,7 +208,7 @@ export default function CareerForm() {
         {/* Cover Letter */}
         <div className="space-y-1">
           <label htmlFor="coverLetter" className="text-xs font-semibold text-text-dark">
-            Cover Letter / Why work with us?
+            {t("forms.coverLetter")}
           </label>
           <textarea
             id="coverLetter"
@@ -194,13 +216,13 @@ export default function CareerForm() {
             rows={4}
             value={formData.coverLetter}
             onChange={handleChange}
-            placeholder="Tell us about your cleaning experience and availability..."
+            placeholder={t("forms.coverLetterPlaceholder")}
             className="w-full px-4 py-2.5 bg-brand-light border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none text-sm"
           ></textarea>
         </div>
 
         <Button variant="primary" type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting Application..." : "Submit Application"}
+          {isSubmitting ? t("forms.careerSubmitting") : t("forms.careerBtn")}
         </Button>
       </div>
     </form>

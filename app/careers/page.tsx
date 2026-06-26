@@ -1,50 +1,69 @@
+"use client";
+
 import React from "react";
 import CareerForm from "@/components/forms/CareerForm";
 import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function CareersPage() {
+  const { t, language } = useTranslation();
+
   const benefits = [
     {
-      title: "Competitive Compensation",
-      desc: "We offer industry-leading hourly rates, paid travel time, and monthly performance bonuses.",
+      title: language === "fr" ? "Rémunération Compétitive" : "Competitive Compensation",
+      desc: language === "fr"
+        ? "Nous offrons des taux horaires parmi les plus élevés de l'industrie, le remboursement du temps de trajet et des primes de performance mensuelles."
+        : "We offer industry-leading hourly rates, paid travel time, and monthly performance bonuses.",
       icon: <Icons.DollarSign size={24} />,
     },
     {
-      title: "Paid Professional Training",
-      desc: "No professional experience required. We provide fully paid hospitality-standard cleaning training.",
+      title: language === "fr" ? "Formation Professionnelle Payée" : "Paid Professional Training",
+      desc: language === "fr"
+        ? "Aucune expérience professionnelle requise. Nous fournissons une formation de nettoyage complète payée, conforme aux normes d'hospitalité."
+        : "No professional experience required. We provide fully paid hospitality-standard cleaning training.",
       icon: <Icons.Sparkles size={24} />,
     },
     {
-      title: "Flexible Schedules",
-      desc: "Choose between stable full-time hours or flexible part-time shifts that fit your personal life.",
+      title: language === "fr" ? "Horaires Flexibles" : "Flexible Schedules",
+      desc: language === "fr"
+        ? "Choisissez entre des heures stables à temps plein ou des quarts de travail à temps partiel flexibles qui s'adaptent à votre vie personnelle."
+        : "Choose between stable full-time hours or flexible part-time shifts that fit your personal life.",
       icon: <Icons.Calendar size={24} />,
     },
     {
-      title: "Healthy Work Environment",
-      desc: "We prioritize your safety by using non-toxic, eco-friendly green cleaning products.",
+      title: language === "fr" ? "Environnement de Travail Sain" : "Healthy Work Environment",
+      desc: language === "fr"
+        ? "Nous accordons la priorité à votre sécurité en utilisant des produits de nettoyage écologiques, biodégradables et non toxiques."
+        : "We prioritize your safety by using non-toxic, eco-friendly green cleaning products.",
       icon: <Icons.Waves size={24} />,
     },
   ];
 
   const jobs = [
     {
-      title: "Residential Cleaning Specialist",
-      type: "Full-Time or Part-Time",
+      title: language === "fr" ? "Spécialiste en Nettoyage Résidentiel" : "Residential Cleaning Specialist",
+      type: language === "fr" ? "Temps plein ou Temps partiel" : "Full-Time or Part-Time",
       location: "Toronto & GTA",
-      desc: "Provide premium cleaning services to residential homes and condos. Must be detail-oriented and have access to reliable transit.",
+      desc: language === "fr"
+        ? "Fournissez des services de nettoyage haut de gamme dans les résidences et condos. Doit être soucieux des détails et disposer d'un moyen de transport fiable."
+        : "Provide premium cleaning services to residential homes and condos. Must be detail-oriented and have access to reliable transit.",
     },
     {
-      title: "Commercial & Office Cleaning Crew",
-      type: "Part-Time (Evenings & Weekends)",
+      title: language === "fr" ? "Équipe de Nettoyage Commercial & Bureaux" : "Commercial & Office Cleaning Crew",
+      type: language === "fr" ? "Temps partiel (Soirs & Week-ends)" : "Part-Time (Evenings & Weekends)",
       location: "Mississauga & Brampton",
-      desc: "Sanitize office buildings, retail spaces, and workspaces after-hours. Perfect for students or secondary income.",
+      desc: language === "fr"
+        ? "Assainissez les bureaux, les locaux commerciaux et les espaces de travail en dehors des heures d'ouverture. Parfait pour les étudiants ou comme revenu d'appoint."
+        : "Sanitize office buildings, retail spaces, and workspaces after-hours. Perfect for students or secondary income.",
     },
     {
-      title: "Deep Cleaning & Carpet Expert",
-      type: "Full-Time",
+      title: language === "fr" ? "Expert en Nettoyage en Profondeur & Tapis" : "Deep Cleaning & Carpet Expert",
+      type: language === "fr" ? "Temps plein" : "Full-Time",
       location: "Vaughan & Markham",
-      desc: "Operate commercial steam extractors, floor polishers, and perform detail deep cleaning routines. Valid driver's license preferred.",
+      desc: language === "fr"
+        ? "Utilisez des extracteurs de vapeur professionnels, des polisseuses et réalisez des nettoyages en profondeur minutieux. Permis de conduire valide souhaitable."
+        : "Operate commercial steam extractors, floor polishers, and perform detail deep cleaning routines. Valid driver's license preferred.",
     },
   ];
 
@@ -54,13 +73,13 @@ export default function CareersPage() {
       <section className="bg-brand-light py-20 border-b border-gray-100">
         <Reveal className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <span className="bg-primary/10 text-primary font-montserrat font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full inline-block">
-            Join Our Team
+            {t("careers.hero.tag")}
           </span>
           <h1 className="font-montserrat font-extrabold text-4xl sm:text-5xl text-text-dark max-w-3xl mx-auto leading-tight">
-            Build a Rewarding Career in Cleaning Excellence
+            {t("careers.hero.title")}
           </h1>
           <p className="text-text-muted text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-            We support our cleaning specialists with premium training, fair wages, and a supportive family culture.
+            {t("careers.hero.desc")}
           </p>
         </Reveal>
       </section>
@@ -70,13 +89,13 @@ export default function CareersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-              Work With Us
+              {t("careers.benefitsSec.tag")}
             </span>
             <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-              Why Join Inter-Cleaning Services?
+              {t("careers.benefitsSec.title")}
             </h2>
             <p className="text-text-muted text-sm">
-              We believe in rewarding hard work. Here is what we offer to all our dedicated staff members:
+              {t("careers.benefitsSec.desc")}
             </p>
           </Reveal>
 
@@ -88,7 +107,7 @@ export default function CareersPage() {
                 animationType="fade-in-up"
                 className="h-full flex"
               >
-                <div className="bg-brand-light border border-gray-150 p-8 rounded-3xl space-y-4 hover:shadow-lg hover:bg-white transition-all duration-300 w-full">
+                <div className="bg-brand-light border border-gray-155 p-8 rounded-3xl space-y-4 hover:shadow-lg hover:bg-white transition-all duration-300 w-full">
                   <div className="bg-primary/10 text-primary p-3 rounded-2xl inline-block">
                     {benefit.icon}
                   </div>
@@ -113,13 +132,13 @@ export default function CareersPage() {
             <div className="space-y-8">
               <Reveal className="space-y-3">
                 <span className="text-primary font-montserrat font-bold text-xs uppercase tracking-widest">
-                  Opportunities
+                  {t("careers.opp.tag")}
                 </span>
                 <h2 className="font-montserrat font-extrabold text-3xl text-text-dark">
-                  Open Opportunities
+                  {t("careers.opp.title")}
                 </h2>
                 <p className="text-text-muted text-sm leading-relaxed">
-                  We are always looking for reliable, honest, and hardworking individuals to join our growing team. Review our positions and apply online.
+                  {t("careers.opp.desc")}
                 </p>
               </Reveal>
 
@@ -157,3 +176,4 @@ export default function CareersPage() {
     </div>
   );
 }
+
