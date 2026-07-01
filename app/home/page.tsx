@@ -7,7 +7,7 @@ import { Icons } from "@/components/ui/Icons";
 import Reveal from "@/components/ui/Reveal";
 import { useTranslation } from "@/hooks/useTranslation";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
+import { BeforeAfterGallery, GalleryProject } from "@/components/ui/BeforeAfterGallery";
 
 interface ServiceCardProps {
   title: string;
@@ -59,11 +59,6 @@ function ServiceCard({ title, desc, image, fallbackImage, href, icon, delay = 0 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { t, language } = useTranslation();
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
@@ -159,7 +154,7 @@ export default function HomePage() {
     },
   ];
 
-  const slides = language === "fr" ? [
+  const slides: GalleryProject[] = language === "fr" ? [
     {
       id: 1,
       title: "Restauration Complète de Cuisine",
@@ -234,45 +229,6 @@ export default function HomePage() {
       imageAfter: "/images/showcase_floor_after.png",
     }
   ];
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
-
-  useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isPaused, currentSlide]);
-
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    if (isLeftSwipe) {
-      nextSlide();
-    } else if (isRightSwipe) {
-      prevSlide();
-    }
-  };
 
   return (
     <div className="w-full">
@@ -530,89 +486,8 @@ export default function HomePage() {
             </p>
           </Reveal>
 
-          {/* Carrousel Wrapper */}
-          <Reveal animationType="fade-in-up" className="relative max-w-5xl mx-auto bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex flex-col lg:flex-row h-auto min-h-[450px]">
-            <div 
-              className="w-full flex flex-col lg:flex-row"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-            >
-              {/* Visuals Column: Before & After comparison slider with real images */}
-              <div className="lg:w-3/5 relative h-[300px] sm:h-[400px] lg:h-auto min-h-[400px] flex">
-                <BeforeAfterSlider
-                  beforeImage={slides[currentSlide].imageBefore}
-                  afterImage={slides[currentSlide].imageAfter}
-                  altBefore={`${slides[currentSlide].title} Before`}
-                  altAfter={`${slides[currentSlide].title} After`}
-                  beforeLabel={language === "fr" ? "Avant" : "Before"}
-                  afterLabel={language === "fr" ? "Après" : "After"}
-                  className="w-full h-full"
-                />
-              </div>
-
-              {/* Content details Column */}
-              <div className="lg:w-2/5 p-8 sm:p-10 flex flex-col justify-between space-y-6">
-                <div className="space-y-4">
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <span className="bg-primary/10 text-primary font-montserrat font-bold text-2xs uppercase tracking-widest px-3 py-1 rounded-full">
-                      {slides[currentSlide].service}
-                    </span>
-                    <span className="bg-gray-100 text-text-muted font-montserrat font-bold text-2xs uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
-                      <Icons.MapPin size={10} className="text-primary" /> {slides[currentSlide].location}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="font-montserrat font-extrabold text-2xl text-text-dark transition-colors duration-300">
-                    {slides[currentSlide].title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-text-muted text-sm leading-relaxed font-opensans">
-                    {slides[currentSlide].desc}
-                  </p>
-                </div>
-
-                {/* Navigation Buttons & Bullets info */}
-                <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
-                  {/* Left/Right navigation */}
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={prevSlide}
-                      aria-label="Previous Project"
-                      className="w-10 h-10 rounded-full border border-gray-200 text-text-muted hover:text-primary hover:border-primary flex items-center justify-center transition-all bg-white hover:shadow-sm cursor-pointer"
-                    >
-                      <Icons.ChevronRight className="rotate-180" size={20} />
-                    </button>
-                    <button
-                      onClick={nextSlide}
-                      aria-label="Next Project"
-                      className="w-10 h-10 rounded-full border border-gray-200 text-text-muted hover:text-primary hover:border-primary flex items-center justify-center transition-all bg-white hover:shadow-sm cursor-pointer"
-                    >
-                      <Icons.ChevronRight size={20} />
-                    </button>
-                  </div>
-
-                  {/* Dots pagination */}
-                  <div className="flex items-center gap-1.5">
-                    {slides.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setCurrentSlide(idx)}
-                        aria-label={`Go to project slide ${idx + 1}`}
-                        className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                          idx === currentSlide ? "bg-primary w-5" : "bg-gray-200 hover:bg-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Reveal animationType="fade-in-up">
+            <BeforeAfterGallery projects={slides} />
           </Reveal>
         </div>
       </section>

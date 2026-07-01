@@ -51,13 +51,27 @@ export default function QuoteForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API request
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "quote",
+          ...formData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Failed to send quote request");
+      }
+
       setIsSuccess(true);
       setFormData({
         name: "",
@@ -68,7 +82,16 @@ export default function QuoteForm() {
         frequency: "",
         message: "",
       });
-    }, 1500);
+    } catch (error) {
+      console.error("Error submitting quote form:", error);
+      alert(
+        language === "fr"
+          ? "Une erreur est survenue lors de l'envoi de votre demande de devis. Veuillez réessayer."
+          : "An error occurred while sending your quote request. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
