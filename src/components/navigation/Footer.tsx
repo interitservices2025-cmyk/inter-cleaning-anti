@@ -76,6 +76,42 @@ export default function Footer() {
                 </span>
               </div>
             </div>
+
+            {/* Follow Us Section */}
+            <div className="pt-2">
+              <h4 className="font-montserrat font-bold text-xs uppercase tracking-wider text-text-dark mb-3">
+                {t("footer.followUs")}
+              </h4>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://web.facebook.com/intercleaningservices"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="INTER-CLEANING SERVICES on Facebook"
+                  className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-text-muted hover:text-white hover:bg-[#1877F2] hover:border-[#1877F2] shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <Icons.Facebook size={18} />
+                </a>
+                <a
+                  href="https://www.instagram.com/intercleaningservices01/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="INTER-CLEANING SERVICES on Instagram"
+                  className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-text-muted hover:text-white hover:bg-[#E4405F] hover:border-[#E4405F] shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <Icons.Instagram size={18} />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@inter_cleaning_gta"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="INTER-CLEANING SERVICES on TikTok"
+                  className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-text-muted hover:text-white hover:bg-black hover:border-black shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <Icons.TikTok size={18} />
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}

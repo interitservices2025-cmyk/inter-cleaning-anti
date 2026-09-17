@@ -595,6 +595,33 @@ export default function HomePage() {
               </div>
             </Reveal>
           </div>
+
+          {/* Google Review Call to Action */}
+          <Reveal animationType="fade-in-up" delay={200} className="mt-14">
+            <div className="bg-brand-light border border-gray-200/80 rounded-3xl p-8 sm:p-10 max-w-2xl mx-auto text-center shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex justify-center items-center gap-1 text-amber-400 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Icons.Star key={i} size={18} fill="currentColor" />
+                ))}
+              </div>
+              <h3 className="font-montserrat font-bold text-xl sm:text-2xl text-text-dark">
+                {t("home.testimonials.leaveReviewTitle")}
+              </h3>
+              <p className="font-opensans text-text-muted text-sm sm:text-base mt-2 mb-6 max-w-md mx-auto">
+                {t("home.testimonials.leaveReviewDesc")}
+              </p>
+              <a
+                href="https://g.page/r/CS22UuZsVs0-EAE/review"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Leave a Google Review"
+                className="inline-flex items-center justify-center gap-2.5 bg-primary hover:bg-[#b00a5c] text-white font-montserrat font-bold text-sm sm:text-base px-8 py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <span className="text-amber-300">⭐</span>
+                <span>{t("home.testimonials.leaveReviewBtn")}</span>
+              </a>
+            </div>
+          </Reveal>
         </div>
       </section>
 
